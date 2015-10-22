@@ -18,6 +18,7 @@ namespace GraphVis
 	{
 		Random rnd = new Random();
 		int selectedNodeIndex;
+
 		Dictionary<int, int> nodeId_NodeNumber = new Dictionary<int, int>();
 
 		SpriteFont font1;
@@ -259,12 +260,17 @@ namespace GraphVis
 				stNet = new StanfordNetwork();
 
 				//			stNet.ReadFromFile("../../../../p2p_networks/p2p-Gnutella25.txt");
+                Dictionary<String, int> dict;
 
-				dict = new Dictionary<int, string>();
-				stNet.ReadFromFile("C:/Users/magistr/Desktop/Graf.txt");
-                stNet.ReadFromFileInforNode("C:/Users/magistr/Desktop/Doctordata4.txt", dict);
+                dict = new Dictionary<String, int>();
+             //   stNet.ReadFromFile("C:/Users/Каринка/Desktop/Graf.txt");
+               
 
+                stNet.ReadFromFileInforNode("C:/Users/magistr/Desktop/Doctordata.txt", dict);
 
+                stNet.ReadFromFilePatientData("C:/Users/magistr/Desktop/almazovdata", dict);
+
+                Console.WriteLine(dict.Count);
 
 
 
@@ -344,14 +350,16 @@ namespace GraphVis
 			{
 				ds.Add(Color.Orange, "Selected node # " + selectedNodeIndex);
 				String info = "";
-				dict.TryGetValue(selectedNodeIndex, out info);
+                dict = new Dictionary<int, string>();
+				
 
 				sb.Begin();
-				font1.DrawString( sb, "Id # " + ": " + info, 44, height - 50 , Color.White );
+				font1.DrawString( sb, "Id # " + selectedNodeIndex + ": " + info, 44, height - 50 , Color.White );
 				
 				sb.End();
-
+                Console.WriteLine(); //вывод имен файлов
 				pSys.Select(selectedNodeIndex);
+
 			}
 			else
 			{

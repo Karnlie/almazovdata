@@ -51,8 +51,8 @@ namespace GraphVis
 				// add nodes:
 				for (int i = 0; i < numNodes; ++i)
 				{
-                    //if (i < 30) {
-                    //    AddNode(new NodeWithText("", 3.0f, Fusion.Mathematics.Color.Blue));
+                    //if (i =) {
+                    //    AddNode(new NodeWithText("", 3.0f, Fusion.Mathematics.Color.Red));
                     //}
                     //else
                     {
@@ -103,11 +103,10 @@ namespace GraphVis
 			}
 		}
 
-		public void ReadFromFileInforNode(String filename, Dictionary<int, String> dict)
+		public void ReadFromFileInforNode(String filename, Dictionary<String, int> dict)
 		{
 			// TODO: dict
 			var lines = File.ReadAllLines(filename);
-
 			if (lines.Length > 0)
 			{
 				// construct dictionary to convert id to number:
@@ -117,9 +116,70 @@ namespace GraphVis
 					parts = line.Split(new Char[] { '\t', '^' }); //^
 					int index1 = int.Parse(parts[0]);
 					string index2 = parts[1];
-					dict.Add(index1, index2);
+
+                    dict.Add(index2, index1);
+                    index2 = index2.Trim();
 				}
-			}
+            }
+            
+
+        }
+        //class Patient(){
+        //    int id;
+        //    string fio;
+
+
+        //}
+       // List<Patient> listPatient;
+
+        public void ReadFromFilePatientData(String dirName, Dictionary<String, int> dict)
+		{
+            
+			
+			string[] files = Directory.GetFiles(dirName);
+            // бегаем по пациентам
+            foreach(string filename in files){
+                
+                
+                var lines = File.ReadAllLines(filename);
+                if (lines.Length > 0)
+			    {
+                    var fnicename = filename.Remove(0, filename.LastIndexOf('\\') + 1);
+                    var splitfilename = fnicename.Split('.');
+                    string pacientid = splitfilename[0];
+				 
+                    // бегаем по докторам
+				    foreach (var line in lines)
+				    {
+					    string[] parts;
+					    parts = line.Split(';'); 
+                        string date = parts[0];
+					    string fio = parts[1];
+                        fio = fio.Trim().Replace("(", "").Replace(")", "");
+    
+                        //Console.WriteLine(dict);
+                        //Console.WriteLine("Пациент" + filename + date + fio);
+                    
+				    }
+
+                 
+			    }
+            }
 		}
+        class doctor
+        {
+            public int id;
+            public string fio;
+            public string date;
+
+        
+        
+        }
+        class pacient
+        {
+            public int id;
+            public  List <doctor> doctors; 
+            
+        }
 	}
 }
