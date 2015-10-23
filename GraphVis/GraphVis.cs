@@ -11,6 +11,8 @@ using Fusion.Input;
 using Fusion.Content;
 using Fusion.Development;
 using Fusion.UserInterface;
+using GraphVis.HelperFiles;
+using GraphVis.Models.Medicine;
 
 namespace GraphVis
 {
@@ -258,22 +260,14 @@ namespace GraphVis
 			{
 				//				StanfordNetwork graph = new StanfordNetwork();
 				stNet = new StanfordNetwork();
-				
-                Dictionary<int, String> dict;
-				Dictionary<String, List<StanfordNetwork.Visit>> patientData;
-                
-				dict = new Dictionary<int, String>();
-				patientData = new Dictionary<string, List<StanfordNetwork.Visit>>();
-               
+                // TODO: add path file
+                stNet.ReadFromFile("../../../../Graf.txt");
+                Dictionary<String, int> dict = new Dictionary<String, int>();
+			    Dictionary<Doctor, HashSet<Patient>> doctorToPatients = new Dictionary<Doctor, HashSet<Patient>>();
 
-                stNet.ReadFromFileInforNode("../../../../Doctordata.txt", dict);
-
-                stNet.ReadFromFilePatientData("../../../../almazovdata", dict, patientData);
-
-                //Console.WriteLine(dict.Count);
-
-
-
+                ReaderFiles.ReadFromFileDoctorList("../../../../Doctordata.txt", dict);
+                ReaderFiles.ReadFromFilePatientData("../../../../almazovdata", dict, doctorToPatients);
+                stNet.BuildGraphFromDictinary(doctorToPatients);
 				graphSys.AddGraph(stNet);
 				// graph file names:
 				// CA-GrQc small

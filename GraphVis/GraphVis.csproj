@@ -58,6 +58,7 @@
     <Compile Include="GreatCircleCamera.cs" />
     <Compile Include="CalculationSystem.cs" />
     <Compile Include="CalculationSystemWolfram.cs" />
+    <Compile Include="HelperFiles\ReaderFiles.cs" />
     <Compile Include="LayoutSystem.cs" />
     <Compile Include="CitationGraph.cs" />
     <Compile Include="GraphFromFile.cs" />
@@ -65,6 +66,10 @@
     <Compile Include="INode.cs" />
     <Compile Include="CalculationSystemAuto.cs" />
     <Compile Include="CalculationSystemFixed.cs" />
+    <Compile Include="Models\Medicine\Doctor.cs" />
+    <Compile Include="Models\Medicine\EdgeDoctor.cs" />
+    <Compile Include="Models\Medicine\Patient.cs" />
+    <Compile Include="Models\Medicine\Visit.cs" />
     <Compile Include="NodeWithText.cs" />
     <Compile Include="OrbitCamera.cs" />
     <Compile Include="GraphSystem.cs" />
@@ -89,6 +94,7 @@
     <Content Include="Content\test.hlsl" />
     <Content Include="DllOVR.dll" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
