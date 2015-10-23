@@ -103,7 +103,7 @@ namespace GraphVis
 			}
 		}
 
-		public void ReadFromFileInforNode(String filename, Dictionary<String, int> dict)
+		public void ReadFromFileInforNode(String filename, Dictionary<int, String> dict)
 		{
 			// TODO: dict
 			var lines = File.ReadAllLines(filename);
@@ -117,69 +117,77 @@ namespace GraphVis
 					int index1 = int.Parse(parts[0]);
 					string index2 = parts[1];
 
-                    dict.Add(index2, index1);
+                    dict.Add(index1, index2);
                     index2 = index2.Trim();
 				}
             }
             
 
         }
-        //class Patient(){
-        //    int id;
-        //    string fio;
+        
 
+        public struct Visit
+        {
+            public DateTime Date;
+            public string Fio;
+            public string Categ;
+            public int Id;
+ 
+        }
 
-        //}
-       // List<Patient> listPatient;
-
-        public void ReadFromFilePatientData(String dirName, Dictionary<String, int> dict)
+       
+        public void ReadFromFilePatientData(String dirName, Dictionary<int, String> dict, Dictionary<int, List<Visit>> patData)
 		{
-            
-			
 			string[] files = Directory.GetFiles(dirName);
-            // бегаем по пациентам
+            // run to pac
             foreach(string filename in files){
                 
                 
                 var lines = File.ReadAllLines(filename);
                 if (lines.Length > 0)
 			    {
-                    var fnicename = filename.Remove(0, filename.LastIndexOf('\\') + 1);
+                    var fnicename = filename.Remove(0, filename.LastIndexOf('\\') + 1); //получаем id пациента
                     var splitfilename = fnicename.Split('.');
-                    string pacientid = splitfilename[0];
+                    var pacientid = splitfilename[0];
+                    int pid = Convert.ToInt32(pacientid);
 				 
-                    // бегаем по докторам
+                    // run to doc
+                    var list = new List<Visit>();
 				    foreach (var line in lines)
-				    {
-					    string[] parts;
-					    parts = line.Split(';'); 
+				    {					    
+                        var parts = line.Split(';');
                         string date = parts[0];
-					    string fio = parts[1];
-                        fio = fio.Trim().Replace("(", "").Replace(")", "");
-    
-                        //Console.WriteLine(dict);
-                        //Console.WriteLine("Пациент" + filename + date + fio);
-                    
-				    }
+					    string doctor = parts[1];
+                        doctor = doctor.Trim().Replace("(", "").Replace(")", "");
 
-                 
+                        var category = doctor.Split(':'); 
+                        string cat = category[0].Trim();
+					    string fio = category[1].Trim();
+                        //cat = cat;
+                        //fio = fio;
+                        int iddoc = 9999;
+                        // получить АйДи врача из Дикт полученного ранее
+                        for (int i = 0; i < dict.Keys.Count - 1; i++) {
+                            if (dict[i] == doctor)
+                                iddoc = i;
+                        }
+
+                        //int iddoc = Dictionary.Key.Value;
+
+                        // привести переменную date к типу DateTime (метод ParseExact)
+
+                        string dateFormat = "dd'.'MM'.'yy' 'HH':'mm";
+                       
+                        var dateNew = DateTime.ParseExact(date, dateFormat, null);
+
+                        list.Add(new Visit {Date = dateNew, Fio = fio, Categ = cat, Id = iddoc});
+                        
+                        
+				    }
+                    patData.Add(pid, list);
 			    }
             }
 		}
-        class doctor
-        {
-            public int id;
-            public string fio;
-            public string date;
 
-        
-        
-        }
-        class pacient
-        {
-            public int id;
-            public  List <doctor> doctors; 
-            
-        }
 	}
 }
