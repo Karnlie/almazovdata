@@ -179,7 +179,9 @@ namespace GraphVis
 						//присваиваем каждой записи ID посещенного врача
 						var docId = 9999;
 					    var surname = fio.Remove(0, fio.LastIndexOf(':') + 2).Split(' ').First(); //вырезаем фамилию из fio
-					    foreach (KeyValuePair<int, string> keyValuePair in dict) { if (keyValuePair.Value.Contains(surname)) docId = keyValuePair.Key; }
+					    foreach (KeyValuePair<int, string> keyValuePair in dict) {
+						    if (keyValuePair.Value.Contains(surname)) docId = keyValuePair.Key;
+					    }
 						
 						//заполняем структуру
 						var visit = new Visit { 
@@ -191,10 +193,7 @@ namespace GraphVis
 						//добавляем структуру в лист
 						entries.Add(visit);
 
-                        //Console.WriteLine(zapisi);
-                        //Console.WriteLine("Пациент" + filename + date + fio);
-						
-				    }
+					}
 					//сортируем лист структур по дате
 					entries.Sort((one, two) => one.Date.CompareTo(two.Date));
 					
