@@ -258,19 +258,19 @@ namespace GraphVis
 			{
 				//				StanfordNetwork graph = new StanfordNetwork();
 				stNet = new StanfordNetwork();
-
-				//			stNet.ReadFromFile("../../../../p2p_networks/p2p-Gnutella25.txt");
-                Dictionary<String, int> dict;
-
-                dict = new Dictionary<String, int>();
-             //   stNet.ReadFromFile("C:/Users/Каринка/Desktop/Graf.txt");
+				
+                Dictionary<int, String> dict;
+				Dictionary<String, List<StanfordNetwork.Visit>> patientData;
+                
+				dict = new Dictionary<int, String>();
+				patientData = new Dictionary<string, List<StanfordNetwork.Visit>>();
                
 
-                stNet.ReadFromFileInforNode("C:/Users/magistr/Desktop/Doctordata.txt", dict);
+                stNet.ReadFromFileInforNode("../../../../Doctordata.txt", dict);
 
-                stNet.ReadFromFilePatientData("C:/Users/magistr/Desktop/almazovdata", dict);
+                stNet.ReadFromFilePatientData("../../../../almazovdata", dict, patientData);
 
-                Console.WriteLine(dict.Count);
+                //Console.WriteLine(dict.Count);
 
 
 

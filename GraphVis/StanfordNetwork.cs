@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
@@ -10,7 +12,7 @@ namespace GraphVis
 	public class StanfordNetwork : GraphFromFile
 	{
 		const int maxNodes = 50000;
-
+		
 		public override void ReadFromFile(string path)
 		{
 			var lines = File.ReadAllLines(path);
@@ -103,7 +105,7 @@ namespace GraphVis
 			}
 		}
 
-		public void ReadFromFileInforNode(String filename, Dictionary<String, int> dict)
+		public void ReadFromFileInforNode(String filename, Dictionary<int, String> dict)
 		{
 			// TODO: dict
 			var lines = File.ReadAllLines(filename);
@@ -117,8 +119,8 @@ namespace GraphVis
 					int index1 = int.Parse(parts[0]);
 					string index2 = parts[1];
 
-                    dict.Add(index2, index1);
-                    index2 = index2.Trim();
+                    dict.Add(index1, index2);
+                    //index2 = index2.Trim();
 				}
             }
             
@@ -131,38 +133,74 @@ namespace GraphVis
 
         //}
        // List<Patient> listPatient;
+	   public struct Visit
+	   {
+		    public DateTime	Date;
+			public string	DocCategorie;
+			public string	DocFio;
+			public int		DocId;
+	   }
 
-        public void ReadFromFilePatientData(String dirName, Dictionary<String, int> dict)
+
+        public void ReadFromFilePatientData(String dirName, Dictionary<int, String> dict, Dictionary<String, List<Visit>> patData)
 		{
             
-			
 			string[] files = Directory.GetFiles(dirName);
             // бегаем по пациентам
-            foreach(string filename in files){
+            
+			
+			foreach(string filename in files){
                 
-                
-                var lines = File.ReadAllLines(filename);
+                //Получаем ID/имена пациентов в pacientid
+				string pacientid = filename.Remove(0, filename.LastIndexOf('\\') + 1).Split('.')[0];
+				
+
+				var lines = File.ReadAllLines(filename);
                 if (lines.Length > 0)
 			    {
-                    var fnicename = filename.Remove(0, filename.LastIndexOf('\\') + 1);
-                    var splitfilename = fnicename.Split('.');
-                    string pacientid = splitfilename[0];
-				 
+					var entries = new List<Visit>();
+				
                     // бегаем по докторам
 				    foreach (var line in lines)
 				    {
-					    string[] parts;
-					    parts = line.Split(';'); 
-                        string date = parts[0];
-					    string fio = parts[1];
-                        fio = fio.Trim().Replace("(", "").Replace(")", "");
-    
-                        //Console.WriteLine(dict);
-                        //Console.WriteLine("Пациент" + filename + date + fio);
-                    
-				    }
+					    var parts = line.Split(';'); 
+                        
+						//обрезаем лишние в дате
+						var datefull = parts[0].Replace("\"", "");
+					    if (parts[0].Replace("\"", "").Length > 14 ) {datefull = datefull.Remove(datefull.IndexOf(':') + 3, datefull.Length-14);}
+						
+						//парсим дату
+						var dateFormat = "dd'.'MM'.'yy' 'HH':'mm";
+						var datedate = DateTime.ParseExact(datefull, dateFormat, null);
+						
+						//чистим поле с категорией и фио
+						var fio = parts[1].Trim().Replace("(", "").Replace(")", "");
+                        
+						//присваиваем каждой записи ID посещенного врача
+						var docId = 9999;
+					    var surname = fio.Remove(0, fio.LastIndexOf(':') + 2).Split(' ').First(); //вырезаем фамилию из fio
+					    foreach (KeyValuePair<int, string> keyValuePair in dict) { if (keyValuePair.Value.Contains(surname)) docId = keyValuePair.Key; }
+						
+						//заполняем структуру
+						var visit = new Visit { 
+							Date = datedate,
+							DocCategorie = fio.Split(':')[0].TrimEnd(),
+							DocFio = fio.Split(':')[1].TrimStart(),
+							DocId = docId
+						};
+						//добавляем структуру в лист
+						entries.Add(visit);
 
-                 
+                        //Console.WriteLine(zapisi);
+                        //Console.WriteLine("Пациент" + filename + date + fio);
+						
+				    }
+					//сортируем лист структур по дате
+					entries.Sort((one, two) => one.Date.CompareTo(two.Date));
+					
+					//записываем отсортированный лист в словарь patData
+					patData.Add(pacientid, entries);
+					Console.WriteLine("Patient ID: " + pacientid + "\t Visits count: "+ patData[pacientid].Count);
 			    }
             }
 		}
@@ -171,9 +209,7 @@ namespace GraphVis
             public int id;
             public string fio;
             public string date;
-
-        
-        
+			
         }
         class pacient
         {
