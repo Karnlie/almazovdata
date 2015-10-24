@@ -108,17 +108,17 @@ namespace GraphVis.HelperFiles
                 }
             }
 //            int limit = 100;
-            using (StreamWriter sw = new StreamWriter("myfile.txt"))
-            {
-                foreach (HashSet<Patient> patients in doctorToPatients.Values)
-                {
-                    foreach (var patient in patients)
-                    {
-                        sw.Write(patient);
-                    }
-                    break;
-                }
-            }
+//            using (StreamWriter sw = new StreamWriter("myfile.txt"))
+//            {
+//                foreach (HashSet<Patient> patients in doctorToPatients.Values)
+//                {
+//                    foreach (var patient in patients)
+//                    {
+//                        sw.Write(patient);
+//                    }
+//                    break;
+//                }
+//            }
             //File.WriteAllLines("myfile.txt",
                // doctorToPatients.Select(x => x.Key.id + ";" + x.Key.fio + ";" + x.Key.category).ToArray());
         }
