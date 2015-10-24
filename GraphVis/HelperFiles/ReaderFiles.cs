@@ -56,7 +56,7 @@ namespace GraphVis.HelperFiles
         static int defaultId;
         public static void ReadFromFilePatientData(String dirName, Dictionary<String, int> dict, Dictionary<Doctor, HashSet<Patient>> doctorToPatients)
         {
-            defaultId = dict.Values.Max();
+            defaultId = dict.Values.Max()+1;
             string[] files = Directory.GetFiles(dirName);
             // бегаем по пациентам
             foreach (string filename in files)
@@ -159,6 +159,7 @@ namespace GraphVis.HelperFiles
             {
                 Console.WriteLine("FIO:" + fio + " NOT FOUND!");
                 docId = defaultId;
+                dict.Add(fio.Replace(" ", ""), docId);
                 defaultId++;
             }
             return docId;
