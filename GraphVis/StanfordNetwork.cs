@@ -113,16 +113,18 @@ namespace GraphVis
             List<int> nodeDegrees = new List<int>();
 
             int numOfNodesAdded = 0;
-            List<EdgeDoctor> enges = new List<EdgeDoctor>();
+            HashSet<Patient> uniquePatients = new HashSet<Patient>();
             foreach (HashSet<Patient> patients  in doctorToPatients.Values)
             {
                 foreach (var patient in patients)
                 {
+                    if(uniquePatients.Contains(patient))
+                        continue;
+                    uniquePatients.Add(patient);
                     for (int i = 0; i < patient.visitList.Count-1; i++)
                     {
                         int index1 = patient.visitList[i].id;
                         int index2 = patient.visitList[i+1].id;
-                        enges.Add(new EdgeDoctor(){index1= index1, index2 = index2});
                         if (!nodeId_NodeNumber.ContainsKey(index1))
                         {
                             nodeId_NodeNumber.Add(index1, numOfNodesAdded);
@@ -151,33 +153,31 @@ namespace GraphVis
             Console.WriteLine("checking...");
 
             int countEnges=0;
-            foreach (HashSet<Patient> patients  in doctorToPatients.Values)
+
+            foreach (var patient in uniquePatients)
             {
-                foreach (var patient in patients)
-                {
-                    for (int i = 0; i < patient.visitList.Count - 1; i++)
+                for (int i = 0; i < patient.visitList.Count - 1; i++)
+                {  
+                    int index1 = patient.visitList[i].id;
+                    int index2 = patient.visitList[i + 1].id;
+                    if (index1 != index2)
                     {
-                        
-                        int index1 = patient.visitList[i].id;
-                        int index2 = patient.visitList[i + 1].id;
-                        if (index1 != index2)
+                        if (index1 < numNodes && index2 < numNodes)
                         {
-                            if (index1 < numNodes && index2 < numNodes)
-                            {
-                                AddEdge(index1, index2);
-                                nodeDegrees[index1] += 1;
-                                nodeDegrees[index2] += 1;
-                                ((NodeWithText)Nodes[index1]).Text = "id=" + index1;
-                                ((NodeWithText)Nodes[index2]).Text = "id=" + index2;
-                            }
+                            AddEdge(index1, index2);
+                            nodeDegrees[index1] += 1;
+                            nodeDegrees[index2] += 1;
+                            ((NodeWithText)Nodes[index1]).Text = "id=" + index1;
+                            ((NodeWithText)Nodes[index2]).Text = "id=" + index2;
                         }
-                        else
-                        {
-                            Console.WriteLine("bad edge: " + index1+"-"+index2);
-                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("bad edge: " + index1+"-"+index2);
                     }
                 }
             }
+           
             Console.WriteLine("checked");
 
             int maxDegree = 0;

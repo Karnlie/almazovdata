@@ -24,5 +24,37 @@ namespace GraphVis.Models.Medicine
             visitList.Add(visit);
         }
 
+        public override bool Equals(object obj)
+        {
+            if (obj == null || !(obj is Patient))
+                return false;
+
+            return ((Patient)obj).id.Equals(this.id);
+        }
+
+        public override int GetHashCode()
+        {
+            return (this.id).GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append(id);
+            builder.Append('\n');
+            foreach (var visit in visitList)
+            {
+                builder.Append(';');
+                builder.Append(visit.id);
+                builder.Append(';');
+                builder.Append(visit.fio);
+                builder.Append(';');
+                builder.Append(visit.category);
+                builder.Append(';');
+                builder.Append(visit.date);
+                builder.Append('\n');
+            }
+            return builder.ToString();
+        }
     }
 }

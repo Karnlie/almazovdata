@@ -17,12 +17,12 @@ namespace GraphVis.Models.Medicine
             if (obj == null || !(obj is Doctor)) 
                 return false;
 
-            return ((Doctor)obj).id ==  this.id && ((Doctor)obj).fio.Replace(" ", "").Equals(this.fio.Replace(" ", "")) && ((Doctor)obj).category.Replace(" ", "").Equals(this.category.Replace(" ", ""));
+            return ((Doctor)obj).fio.Replace(" ", "").Equals(this.fio.Replace(" ", "")) && ((Doctor)obj).category.Replace(" ", "").Equals(this.category.Replace(" ", ""));
         }
 
         public override int GetHashCode()
         {
-            return (this.id + this.fio.Replace(" ", "") + this.category.Replace(" ", "")).GetHashCode();
+            return (this.fio.Replace(" ", "") + this.category.Replace(" ", "")).GetHashCode();
         }  
     }
 }

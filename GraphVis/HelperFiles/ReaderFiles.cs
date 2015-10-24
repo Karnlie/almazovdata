@@ -53,13 +53,12 @@ namespace GraphVis.HelperFiles
 
         }
 
-
+        static int defaultId;
         public static void ReadFromFilePatientData(String dirName, Dictionary<String, int> dict, Dictionary<Doctor, HashSet<Patient>> doctorToPatients)
         {
-            int defaultId = dict.Values.Max();
+            defaultId = dict.Values.Max();
             string[] files = Directory.GetFiles(dirName);
             // бегаем по пациентам
-            int countLines = 0;
             foreach (string filename in files)
             {
                 if (filename.EndsWith(".png"))
@@ -68,45 +67,29 @@ namespace GraphVis.HelperFiles
                 string pacientid = getNicePatientId(filename);
                 Patient patient = new Patient(pacientid);
                 var lines = File.ReadAllLines(filename);
-                countLines += lines.Length;
                 if (lines.Length > 0)
                 {
                     // бегаем по докторам
                     foreach (var line in lines)
                     {
-
                         var parts = line.Split(';');
-                        //обрезаем лишние в дате
                         DateTime datedate = getNiceDate(parts[0]);
-                        //чистим поле с категорией и фио
                         String fio = getNiceFIO(parts[1]);
-
-                        //присваиваем каждой записи ID посещенного врача
-                        int docId;
-                        if (!dict.TryGetValue(fio.Replace(" ", ""), out docId))
-                        {
-                            Console.WriteLine("FIO:"+fio+" NOT FOUND!");
-                            docId = defaultId;
-                            defaultId++;
-                        }
-                        var surname = getSurameFromFio(fio); //вырезаем фамилию из fio
-
-                        //заполняем структуру
-                        var visit = new Visit
+                        int docId = findIdDoctor(dict, fio);
+                        Visit visit = new Visit
                         {
                             id = docId,
                             date = datedate,
-                            category = fio.Split(':')[0].TrimEnd(),
-                            fio = fio.Split(':')[1].TrimStart()
+                            category = fio.Split(':')[0].Trim(),
+                            fio = fio.Split(':')[1].Trim()
                         };
-                        //добавляем структуру в лист
                         patient.addNewVisit(visit);
 
-                        var doctor = new Doctor
+                        Doctor doctor = new Doctor
                         {
                             id = docId,
-                            category = fio.Split(':')[0].TrimEnd(),
-                            fio = fio.Split(':')[1].TrimStart()
+                            category = fio.Split(':')[0].Trim(),
+                            fio = fio.Split(':')[1].Trim()
                         };
                    
                         HashSet<Patient> listPatients;
@@ -124,7 +107,20 @@ namespace GraphVis.HelperFiles
                     patient.visitList.Sort((one, two) => one.date.CompareTo(two.date));
                 }
             }
-            Console.WriteLine(countLines);
+//            int limit = 100;
+            using (StreamWriter sw = new StreamWriter("myfile.txt"))
+            {
+                foreach (HashSet<Patient> patients in doctorToPatients.Values)
+                {
+                    foreach (var patient in patients)
+                    {
+                        sw.Write(patient);
+                    }
+                    break;
+                }
+            }
+            //File.WriteAllLines("myfile.txt",
+               // doctorToPatients.Select(x => x.Key.id + ";" + x.Key.fio + ";" + x.Key.category).ToArray());
         }
 
         private static DateTime getNiceDate(String dateString)
@@ -154,6 +150,18 @@ namespace GraphVis.HelperFiles
         private static String getSurameFromFio(String fio)
         {
             return fio.Split(':').Last().TrimStart();
+        }
+
+        private static int findIdDoctor(Dictionary<String, int> dict, String fio)
+        {
+            int docId;
+            if (!dict.TryGetValue(fio.Replace(" ", ""), out docId))
+            {
+                Console.WriteLine("FIO:" + fio + " NOT FOUND!");
+                docId = defaultId;
+                defaultId++;
+            }
+            return docId;
         }
     }
 }
