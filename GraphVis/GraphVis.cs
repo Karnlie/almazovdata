@@ -421,7 +421,10 @@ namespace GraphVis
 							}, 
 						Color.Zero, vis );
 				}
-			}		
+			}
+			for ( int i = id + 1 ; i < rightPanel.Children.Count(); i++ ) {
+				rightPanel.Remove(rightPanel.Children.ElementAt( i ));
+			}
 		}
 
 		void AddButton(Frame parent, int x, int y, int w, int h, string text, FrameAnchor anchor, Action action, Color bcol, bool visibility = true) {
