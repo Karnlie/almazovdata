@@ -357,9 +357,12 @@ namespace GraphVis
 				
 
 				sb.Begin();
-				font1.DrawString( sb, "Id # " + selectedNodeIndex + ": " + info, 44, height - 50 , Color.White );
+				font1.DrawString( sb, "Выбран врач: " + info, 44, height - 350 , Color.White );
 				
 				sb.End();
+
+               // font1.DrawString(sb, "Пациенты: " + selectedNodeIndex + ": " + info, 44, height - 50, Color.White);
+
                 Console.WriteLine(); //вывод имен файлов
 				pSys.Select(selectedNodeIndex);
 
