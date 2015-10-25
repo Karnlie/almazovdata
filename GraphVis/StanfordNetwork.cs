@@ -162,14 +162,20 @@ namespace GraphVis
 
                         var category = doctor.Split(':'); 
                         string cat = category[0].Trim();
-					    string fio = category[1].Trim();
+                        string fio = category[1].Trim().Replace("\"", "");
                         //cat = cat;
                         //fio = fio;
                         int iddoc = 9999;
-                        // получить АйДи врача из Дикт полученного ранее
-                        for (int i = 0; i < dict.Keys.Count - 1; i++) {
-                            if (dict[i] == doctor)
+                        for (int i = 0; i < dict.Keys.Count - 1; i++)
+                        {
+                            if (dict[i] == fio)
                                 iddoc = i;
+
+                            else
+                            {
+                                dict[i+1] = doctor;
+
+                            }
                         }
 
                         //int iddoc = Dictionary.Key.Value;
