@@ -30,6 +30,7 @@ namespace GraphVis
 		Tuple<Point, Point> dragFrame;
 		int time;
 		StanfordNetwork stNet;
+		Frame rightPanel;
 
 
 		/// <summary>
@@ -55,6 +56,7 @@ namespace GraphVis
 			//		AddService(new OrbitCamera(this), true, false, 9996, 9996 );
 			AddService(new GreatCircleCamera(this), true, false, 9995, 9995);
 			AddService(new GraphSystem(this), true, true, 9994, 9994);
+			AddService( new UserInterface( this, @"headerFont" ), true, true, 10000, 10000 );
 
 			
 
@@ -82,6 +84,18 @@ namespace GraphVis
 			selectedNodePos = new Vector3();
 			isSelected = false;
 			time = 0;
+
+			//add gui interface
+			var ui = GetService<UserInterface>();
+			CreatePanel();
+			ui.RootFrame = rightPanel;
+			ui.SettleControls();
+			GraphicsDevice.DisplayBoundsChanged += (s, e) =>
+			{
+				rightPanel.Height = GraphicsDevice.DisplayBounds.Height;
+				rightPanel.X = GraphicsDevice.DisplayBounds.Width - 200;
+			};
+
 			//	add keyboard handler :
 			InputDevice.KeyDown += InputDevice_KeyDown;
 			InputDevice.MouseScroll += inputDevice_MouseScroll;
@@ -354,6 +368,9 @@ namespace GraphVis
                 Console.WriteLine(); //вывод имен файлов
 				pSys.Select(selectedNodeIndex);
 
+				//вывод в панель пациентов и врача
+				rightPanel.Children.ElementAt( 0 ).Text = "Id # " + selectedNodeIndex;
+				CreatePatientList( new List<String>() { "First", "Test", "Third One", "" + 123 } );
 			}
 			else
 			{
@@ -363,5 +380,70 @@ namespace GraphVis
 		}
 
 		public Dictionary<int, string> dict { get; set; }
+
+		
+		void CreatePanel() {
+			rightPanel = new Frame( this, GraphicsDevice.DisplayBounds.Width - 200, 0, 200, GraphicsDevice.DisplayBounds.Height, "", new Color( 20, 20, 20 ) );
+			int buttonHeight    = rightPanel.Font.LineHeight;
+			int buttonWidth     = rightPanel.Width;
+
+			Frame doctor = new Frame( this, 0, 10, rightPanel.Width, buttonHeight, "", Color.Zero ) {
+				Anchor = FrameAnchor.Top | FrameAnchor.Left,
+				PaddingLeft = 25,
+			};
+			rightPanel.Add( doctor );
+
+			AddButton( rightPanel, 0, doctor.Height * 2 + 10, buttonWidth, buttonHeight, "List of Patients", FrameAnchor.Top | FrameAnchor.Left,
+				() => { for ( int i = 2; i < rightPanel.Children.Count(); i++ ) { var c = rightPanel.Children.ElementAt(i); c.Visible = !c.Visible; } }, Color.Zero );
+			List<String> list = new List<String>() { "First", "Second", "Third One" };
+			CreatePatientList(list);
+
+		}
+
+		void CreatePatientList(List<String> list) {
+			int id = 0;
+			int buttonHeight    = rightPanel.Font.LineHeight;
+			bool vis = false;
+			foreach ( var s in list ) {
+				if ( ( 2 + id ) < rightPanel.Children.Count() ) {
+					vis = rightPanel.Children.ElementAt( 2 + id ).Visible;
+					rightPanel.Children.ElementAt( 2 + id++ ).Text = s;
+				}
+				else {
+					AddButton( rightPanel, 0, buttonHeight * 3 + 10 + buttonHeight * id++ * 2, rightPanel.Width, buttonHeight * 2, s, FrameAnchor.Top | FrameAnchor.Left, 
+						() => { 
+								// место для функции по клику на пациента
+							}, 
+						Color.Zero, vis );
+				}
+			}		
+		}
+
+		void AddButton(Frame parent, int x, int y, int w, int h, string text, FrameAnchor anchor, Action action, Color bcol, bool visibility = true) {
+			var button = new Frame( this, x, y, w, h, text, Color.White ) {
+				Anchor = anchor,
+				TextAlignment = Alignment.MiddleLeft,
+				PaddingLeft = 25,
+				Visible = visibility,
+			};
+			Color testcol = new Color( 51, 51, 51, 255 );
+
+			if ( action != null ) {
+				button.Click += (s, e) =>
+				{
+					action();
+					if (bcol != testcol) {bcol = (bcol == Color.Zero) ? (new Color(62, 106, 181, 255)) : (Color.Zero);}
+				};
+			}
+			
+			button.StatusChanged += (s, e) =>
+			{
+				if ( e.Status == FrameStatus.None ) { button.BackColor = bcol; }
+				if ( e.Status == FrameStatus.Hovered ) { button.BackColor = new Color( 25, 71, 138, 255 ); }
+				if ( e.Status == FrameStatus.Pushed ) { button.BackColor = new Color( 99, 132, 181, 255 ); }
+			};
+
+			parent.Add( button );
+		}
 	}
 }
