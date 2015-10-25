@@ -268,7 +268,7 @@ namespace GraphVis
              
                 patData = new Dictionary <int, List <StanfordNetwork.Visit>>();
 
-                stNet.ReadFromFileInforNode("../../../../Doctordata.txt", dict);
+                stNet.ReadFromFileInforNode("../../../../Doctordata1.txt", dict);
 
                 stNet.ReadFromFilePatientData("../../../../almazovdata", dict, patData);
 
