@@ -163,8 +163,6 @@ namespace GraphVis
                         var category = doctor.Split(':'); 
                         string cat = category[0].Trim();
                         string fio = category[1].Trim().Replace("\"", "");
-                        //cat = cat;
-                        //fio = fio;
                         int iddoc = 9999;
                         for (int i = 0; i < dict.Keys.Count - 1; i++)
                         {
