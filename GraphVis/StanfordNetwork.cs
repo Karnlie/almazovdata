@@ -178,8 +178,6 @@ namespace GraphVis
 
                         //int iddoc = Dictionary.Key.Value;
 
-                        // привести переменную date к типу DateTime (метод ParseExact)
-
                         string dateFormat = "dd'.'MM'.'yy' 'HH':'mm";
                        
                         var dateNew = DateTime.ParseExact(date, dateFormat, null);
