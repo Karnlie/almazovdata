@@ -31,6 +31,7 @@ namespace GraphVis
 		int time;
 		StanfordNetwork stNet;
 		Frame rightPanel;
+		Dictionary<Doctor, HashSet<Patient>> doctorToPatients;
 
 
 		/// <summary>
@@ -277,7 +278,7 @@ namespace GraphVis
                 // TODO: add path file
                 stNet.ReadFromFile("../../../../Graf.txt");
                 Dictionary<String, int> dict = new Dictionary<String, int>();
-			    Dictionary<Doctor, HashSet<Patient>> doctorToPatients = new Dictionary<Doctor, HashSet<Patient>>();
+			    doctorToPatients = new Dictionary<Doctor, HashSet<Patient>>();
 
                 ReaderFiles.ReadFromFileDoctorList("../../../../Doctordata.txt", dict);
                 ReaderFiles.ReadFromFilePatientData("../../../../almazovdata", dict, doctorToPatients);
@@ -370,7 +371,10 @@ namespace GraphVis
 
 				//вывод в панель пациентов и врача
 				rightPanel.Children.ElementAt( 0 ).Text = "Id # " + selectedNodeIndex;
-				CreatePatientList( new List<String>() { "First", "Test", "Third One", "" + 123 } );
+				Doctor doctor = doctorToPatients.Keys.First(x => x.id == selectedNodeIndex );
+				HashSet<Patient> patients;
+				doctorToPatients.TryGetValue( doctor, out patients);
+				CreatePatientList(patients);
 			}
 			else
 			{
@@ -383,7 +387,9 @@ namespace GraphVis
 
 		
 		void CreatePanel() {
-			rightPanel = new Frame( this, GraphicsDevice.DisplayBounds.Width - 200, 0, 200, GraphicsDevice.DisplayBounds.Height, "", new Color( 20, 20, 20 ) );
+			rightPanel = new Frame( this, GraphicsDevice.DisplayBounds.Width - 200, 0, 200, GraphicsDevice.DisplayBounds.Height, "", new Color( 20, 20, 20 ) ) {
+				//ClippingMode = ClippingMode.ClipByFrame,
+			};
 			int buttonHeight    = rightPanel.Font.LineHeight;
 			int buttonWidth     = rightPanel.Width;
 
@@ -395,16 +401,15 @@ namespace GraphVis
 
 			AddButton( rightPanel, 0, doctor.Height * 2 + 10, buttonWidth, buttonHeight, "List of Patients", FrameAnchor.Top | FrameAnchor.Left,
 				() => { for ( int i = 2; i < rightPanel.Children.Count(); i++ ) { var c = rightPanel.Children.ElementAt(i); c.Visible = !c.Visible; } }, Color.Zero );
-			List<String> list = new List<String>() { "First", "Second", "Third One" };
-			CreatePatientList(list);
 
 		}
 
-		void CreatePatientList(List<String> list) {
+		void CreatePatientList(HashSet<Patient> list) {
 			int id = 0;
 			int buttonHeight    = rightPanel.Font.LineHeight;
 			bool vis = false;
-			foreach ( var s in list ) {
+			foreach ( var l in list ) {
+				String s = l.id;
 				if ( ( 2 + id ) < rightPanel.Children.Count() ) {
 					vis = rightPanel.Children.ElementAt( 2 + id ).Visible;
 					rightPanel.Children.ElementAt( 2 + id++ ).Text = s;
