@@ -405,25 +405,27 @@ namespace GraphVis
 		}
 
 		void CreatePatientList(HashSet<Patient> list) {
-			int id = 0;
+			int id = 1;
 			int buttonHeight    = rightPanel.Font.LineHeight;
 			bool vis = false;
 			foreach ( var l in list ) {
 				String s = l.id;
 				if ( ( 2 + id ) < rightPanel.Children.Count() ) {
-					vis = rightPanel.Children.ElementAt( 2 + id ).Visible;
-					rightPanel.Children.ElementAt( 2 + id++ ).Text = s;
+					vis = rightPanel.Children.ElementAt( 1 + id ).Visible;
+					rightPanel.Children.ElementAt( 1 + id++ ).Text = s;
 				}
 				else {
-					AddButton( rightPanel, 0, buttonHeight * 3 + 10 + buttonHeight * id++ * 2, rightPanel.Width, buttonHeight * 2, s, FrameAnchor.Top | FrameAnchor.Left, 
+					AddButton( rightPanel, 0, buttonHeight * 3 + 10 + buttonHeight * (id - 1) * 2, rightPanel.Width, buttonHeight * 2, s, FrameAnchor.Top | FrameAnchor.Left, 
 						() => { 
 								// место для функции по клику на пациента
 							}, 
 						Color.Zero, vis );
+					id++;
 				}
 			}
 			for ( int i = id + 1 ; i < rightPanel.Children.Count(); i++ ) {
-				rightPanel.Remove(rightPanel.Children.ElementAt( i ));
+				rightPanel.Children.ElementAt( i ).Text = "";
+				//rightPanel.Remove(rightPanel.Children.ElementAt( i ));
 			}
 		}
 
