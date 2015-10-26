@@ -97,6 +97,9 @@ namespace GraphVis
 			{
 				rightPanel.Height = GraphicsDevice.DisplayBounds.Height;
                 rightPanel.Width = GraphicsDevice.DisplayBounds.Width;
+				foreach (var child in rightPanel.Children){
+					child.X = rightPanel.Width - 200;
+				}
             };
 
 			//	add keyboard handler :
@@ -425,15 +428,15 @@ namespace GraphVis
 				//ClippingMode = ClippingMode.ClipByFrame,
 			};
 			int buttonHeight    = rightPanel.Font.LineHeight;
-			int buttonWidth     = rightPanel.Width;
+			int buttonWidth     = 200;
 
-			Frame doctor = new Frame( this, 0, 0, rightPanel.Width, buttonHeight, "", Color.Zero ) {
-				Anchor = FrameAnchor.Top | FrameAnchor.Left,
-				PaddingLeft = 25,
+			Frame doctor = new Frame( this, rightPanel.Width - buttonWidth, 0, rightPanel.Width, buttonHeight, "", Color.Zero ) {
+				//Anchor = FrameAnchor.Top | FrameAnchor.Right,
+				//PaddingLeft = 25,
 			};
 			rightPanel.Add( doctor );
             
-			AddButton( rightPanel, 0, doctor.Height + 10, buttonWidth, buttonHeight, "List of Patients", FrameAnchor.Top | FrameAnchor.Left,
+			AddButton( rightPanel, rightPanel.Width - buttonWidth, doctor.Height + 10, buttonWidth, buttonHeight, "List of Patients", FrameAnchor.Top | FrameAnchor.Left,
 				//() => { for ( int i = 2; i < rightPanel.Children.Count(); i++ ) { var c = rightPanel.Children.ElementAt(i); c.Visible = !c.Visible; } }, Color.Zero );
 				() => { }, Color.Zero );
 
@@ -442,7 +445,7 @@ namespace GraphVis
 		void CreatePatientList(HashSet<Patient> list) {
 
 			int buttonHeight    = rightPanel.Font.LineHeight;	
-			int buttonWidth		= 250;	
+			int buttonWidth		= 200;	
 			//int size = rightPanel.Children.Count();
             while (rightPanel.Children.Count() > 2)
             {
@@ -455,7 +458,7 @@ namespace GraphVis
 				String s = l.id;
 				
 				
-					AddButton( rightPanel, 0,  width - buttonWidth, buttonWidth, buttonHeight, s, FrameAnchor.Top | FrameAnchor.Left, 
+					AddButton( rightPanel, width - buttonWidth,  0, buttonWidth, buttonHeight, s, FrameAnchor.Top | FrameAnchor.Left, 
 						() => { 
 								// место для функции по клику на пациента
                                 drawPatientsPath(l);
@@ -477,7 +480,7 @@ namespace GraphVis
 		void AddButton(Frame parent, int x, int y, int w, int h, string text, FrameAnchor anchor, Action action, Color bcol, bool visibility = true) {
 			var button = new Frame( this, x, y, w, h, text, Color.White ) {
 				Anchor = anchor,
-				TextAlignment = Alignment.MiddleLeft,
+				TextAlignment = Alignment.MiddleCenter,
 				PaddingLeft = 25,
                 Font = labelFontNormal,
 				Visible = visibility,
