@@ -512,11 +512,11 @@ namespace GraphVis
 //            sb.End();
             var graphSys = GetService<GraphSystem>();
             graphSys.SelectPath(patient.visitList.Select(visit => visit.id).ToList());
-            var visitByDate = patient.visitList.GroupBy(visit => visit.date.ToString("dd/MM/yyyy"));
+            var visitByDate = patient.visitList.GroupBy(visit => visit.date.ToString("dd MMM yyyy"));
 	        int countVisitByDate = visitByDate.Count();
 	        if (countVisitByDate > 25)
 	        {
-                visitByDate = patient.visitList.GroupBy(visit => visit.date.ToString("MM/yyyy"));
+                visitByDate = patient.visitList.GroupBy(visit => visit.date.ToString("dd MMM"));
                 countVisitByDate = visitByDate.Count();
 	        }
 	        var width = GraphicsDevice.DisplayBounds.Width/countVisitByDate;
