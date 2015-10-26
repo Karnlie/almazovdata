@@ -442,19 +442,20 @@ namespace GraphVis
 		void CreatePatientList(HashSet<Patient> list) {
 
 			int buttonHeight    = rightPanel.Font.LineHeight;	
+			int buttonWidth		= 250;	
 			//int size = rightPanel.Children.Count();
             while (rightPanel.Children.Count() > 2)
             {
                 rightPanel.Remove(rightPanel.Children.ElementAt(2));
             }
 			
-
+			int width = GraphicsDevice.DisplayBounds.Width;
 			//int id = 1;
 			foreach ( var l in list ) {
 				String s = l.id;
 				
 				
-					AddButton( rightPanel, 0,  0, rightPanel.Width, buttonHeight, s, FrameAnchor.Top | FrameAnchor.Left, 
+					AddButton( rightPanel, 0,  width - buttonWidth, buttonWidth, buttonHeight, s, FrameAnchor.Top | FrameAnchor.Left, 
 						() => { 
 								// место для функции по клику на пациента
                                 drawPatientsPath(l);
@@ -500,6 +501,34 @@ namespace GraphVis
 
 			parent.Add( button );
 		}
+
+		 void AddImageButton(Frame parent, int x, int y, int w, int h, string img, string text, Color color, Color colorH, Color colorP, Action action)
+        {
+            var button = new Frame(this, x, y, w, h, text, Color.Zero)
+            {
+                Image = Content.Load<Texture2D>(img),
+                ImageColor = Color.White,
+                ImageMode = FrameImageMode.Centered,
+               // Font = Game.GetService<Dashboard>().labelFontAccent, 
+				TextAlignment = Alignment.MiddleLeft,
+                TextOffsetX = 45,
+                Anchor = FrameAnchor.Top | FrameAnchor.Right,
+            };
+            
+            button.StatusChanged += (s, e) =>
+            {
+                if (e.Status == FrameStatus.None)       { button.ImageColor = color;  button.ForeColor = Color.Zero; }
+                if (e.Status == FrameStatus.Hovered)    { button.ImageColor = colorH; button.ForeColor = Color.White; }
+                if (e.Status == FrameStatus.Pushed)     { button.ImageColor = colorP; button.ForeColor = colorH;}
+            };
+            
+            if (action != null)
+            {
+                button.Click += (s, e) => action();
+            }
+            
+            parent.Add(button);
+        }
 
 	    public void drawPatientsPath(Patient patient)
 	    {
