@@ -400,18 +400,19 @@ namespace GraphVis
 			rightPanel.Add( doctor );
 
 			AddButton( rightPanel, 0, doctor.Height * 2 + 10, buttonWidth, buttonHeight, "List of Patients", FrameAnchor.Top | FrameAnchor.Left,
-				() => { for ( int i = 2; i < rightPanel.Children.Count(); i++ ) { var c = rightPanel.Children.ElementAt(i); c.Visible = !c.Visible; } }, Color.Zero );
+				//() => { for ( int i = 2; i < rightPanel.Children.Count(); i++ ) { var c = rightPanel.Children.ElementAt(i); c.Visible = !c.Visible; } }, Color.Zero );
+				() => { }, Color.Zero );
 
 		}
 
 		void CreatePatientList(HashSet<Patient> list) {
 			int id = 1;
 			int buttonHeight    = rightPanel.Font.LineHeight;
-			bool vis = false;
+			//bool vis = false;
 			foreach ( var l in list ) {
 				String s = l.id;
-				if ( ( 2 + id ) < rightPanel.Children.Count() ) {
-					vis = rightPanel.Children.ElementAt( 1 + id ).Visible;
+				if ( ( 2 + id ) <= rightPanel.Children.Count() ) {
+					//vis = rightPanel.Children.ElementAt( 1 + id ).Visible;
 					rightPanel.Children.ElementAt( 1 + id++ ).Text = s;
 				}
 				else {
@@ -419,13 +420,13 @@ namespace GraphVis
 						() => { 
 								// место для функции по клику на пациента
 							}, 
-						Color.Zero, vis );
+						Color.Zero );
 					id++;
 				}
 			}
 			for ( int i = id + 1 ; i < rightPanel.Children.Count(); i++ ) {
-				rightPanel.Children.ElementAt( i ).Text = "";
-				//rightPanel.Remove(rightPanel.Children.ElementAt( i ));
+				//rightPanel.Children.ElementAt( i ).Text = "";
+				rightPanel.Remove(rightPanel.Children.ElementAt( i ));
 			}
 		}
 
