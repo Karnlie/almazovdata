@@ -532,13 +532,6 @@ namespace GraphVis
 
 	    public void drawPatientsPath(Patient patient)
 	    {
-//            var sb = GetService<SpriteBatch>();
-//            int width = GraphicsDevice.DisplayBounds.Width;
-//            int height = GraphicsDevice.DisplayBounds.Height;
-//	        var visitByDate = patient.visitList.GroupBy(visit => visit.date.Day);
-//            sb.Begin();
-//                font1.DrawString(sb, "Id # " + selectedNodeIndex , 44, height - 20, Color.White);
-//            sb.End();
             var graphSys = GetService<GraphSystem>();
             graphSys.SelectPath(patient.visitList.Select(visit => visit.id).ToList());
             var visitByDate = patient.visitList.GroupBy(visit => visit.date.ToString("dd MMM yyyy"));
