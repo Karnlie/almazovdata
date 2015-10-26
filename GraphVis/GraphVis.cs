@@ -106,7 +106,7 @@ namespace GraphVis
 		}
 
 
-
+		int verticalOffset = 0;
 		/// <summary>
 		/// Disposes game
 		/// </summary>
@@ -124,11 +124,23 @@ namespace GraphVis
 		void inputDevice_MouseScroll(object sender, Fusion.Input.InputDevice.MouseScrollEventArgs e)
 		{
 			if (rightPanel.GetBorderedRectangle().Contains(InputDevice.MousePosition) && e.WheelDelta != 0){
-				int maxwheel = rightPanel.Children.ElementAt(rightPanel.Children.Count() - 1).Y + 2 * rightPanel.Font.LineHeight;
-				float bottom_boundary = maxwheel - rightPanel.Height;
-				float top_boundary    = rightPanel.Y - rightPanel.Children.ElementAt(0).Y;
-				if ( bottom_boundary >= 0 && e.WheelDelta < 0) rightPanel.ForEachChildren( x => x.Y += e.WheelDelta);
-				if ( top_boundary >= 0 && e.WheelDelta > 0) rightPanel.ForEachChildren( x => x.Y += e.WheelDelta);
+				//int maxwheel = rightPanel.Children.ElementAt(rightPanel.Children.Count() - 1).Y + rightPanel.Font.LineHeight;
+				//float bottom_boundary = maxwheel - rightPanel.Height;
+				//float top_boundary    = rightPanel.Y - rightPanel.Children.ElementAt(0).Y;
+				//if ( bottom_boundary >= 0 && e.WheelDelta < 0) rightPanel.ForEachChildren( x => x.Y += e.WheelDelta);
+				//if ( top_boundary >= 0 && e.WheelDelta > 0) 
+				
+				verticalOffset += e.WheelDelta;
+
+				int y = verticalOffset + 5;
+
+				foreach (var child in rightPanel.Children){
+					child.Y = y;
+
+					y += child.Height + 10;
+				}
+				//rightPanel.ForEachChildren( x => x.Y =);
+				//Console.WriteLine(e.WheelDelta);
 			} else {
 				var cam = GetService<GreatCircleCamera>();
 				cam.DollyZoom(e.WheelDelta / 60.0f);
@@ -240,8 +252,11 @@ namespace GraphVis
 					{
 						Console.WriteLine(((NodeWithText)stNet.Nodes[selectedNodeIndex]).Text);
 					}
-					int j = 0;
-					rightPanel.ForEachChildren(x =>  x.Y =  rightPanel.Font.LineHeight * j++ * 2 + 10);
+					
+					Doctor doctor = doctorToPatients.Keys.First(x => x.id == selectedNodeIndex );
+					HashSet<Patient> patients;
+					doctorToPatients.TryGetValue( doctor, out patients);
+					CreatePatientList(patients);
 				}
 				else
 				{
@@ -372,9 +387,9 @@ namespace GraphVis
 			if (isSelected)
 			{
                 Doctor doctor = doctorToPatients.Keys.First(x => x.id == selectedNodeIndex );
-				HashSet<Patient> patients;
-				doctorToPatients.TryGetValue( doctor, out patients);
-				CreatePatientList(patients);
+				//HashSet<Patient> patients;
+				//doctorToPatients.TryGetValue( doctor, out patients);
+				//CreatePatientList(patients);
 				ds.Add(Color.Orange, "Selected node # " + selectedNodeIndex);
 				String info = "";
                 dict = new Dictionary<int, string>();
@@ -411,45 +426,49 @@ namespace GraphVis
 			int buttonHeight    = rightPanel.Font.LineHeight;
 			int buttonWidth     = rightPanel.Width;
 
-			Frame doctor = new Frame( this, 0, 10, rightPanel.Width, buttonHeight, "", Color.Zero ) {
+			Frame doctor = new Frame( this, 0, 0, rightPanel.Width, buttonHeight, "", Color.Zero ) {
 				Anchor = FrameAnchor.Top | FrameAnchor.Left,
 				PaddingLeft = 25,
 			};
 			rightPanel.Add( doctor );
             
-			AddButton( rightPanel, 0, doctor.Height * 2 + 10, buttonWidth, buttonHeight, "List of Patients", FrameAnchor.Top | FrameAnchor.Left,
+			AddButton( rightPanel, 0, doctor.Height + 10, buttonWidth, buttonHeight, "List of Patients", FrameAnchor.Top | FrameAnchor.Left,
 				//() => { for ( int i = 2; i < rightPanel.Children.Count(); i++ ) { var c = rightPanel.Children.ElementAt(i); c.Visible = !c.Visible; } }, Color.Zero );
 				() => { }, Color.Zero );
 
 		}
 
 		void CreatePatientList(HashSet<Patient> list) {
-			int buttonHeight    = rightPanel.Font.LineHeight;			
-			int id = 1;
-            for (int i = 2; i < rightPanel.Children.Count(); i++)
+
+			int buttonHeight    = rightPanel.Font.LineHeight;	
+			//int size = rightPanel.Children.Count();
+            while (rightPanel.Children.Count() > 2)
             {
-                //rightPanel.Children.ElementAt( i ).Text = "";
-                rightPanel.Remove(rightPanel.Children.ElementAt(i));
+                rightPanel.Remove(rightPanel.Children.ElementAt(2));
             }
-			//bool vis = false;
-			int latestY = rightPanel.Children.ElementAt( 1 ).Y;
+			
+
+			//int id = 1;
 			foreach ( var l in list ) {
 				String s = l.id;
-				if ( ( 2 + id ) <= rightPanel.Children.Count() ) {
-					//vis = rightPanel.Children.ElementAt( 1 + id ).Visible;
-					//latestY = rightPanel.Children.ElementAt( id).Y;
-					rightPanel.Children.ElementAt( 1 + id++ ).Text = s;
-				}
-				else {
-					AddButton( rightPanel, 0, buttonHeight * 3 + 10 + buttonHeight * (id - 1) , rightPanel.Width, buttonHeight, s, FrameAnchor.Top | FrameAnchor.Left, 
+				
+				
+					AddButton( rightPanel, 0,  0, rightPanel.Width, buttonHeight, s, FrameAnchor.Top | FrameAnchor.Left, 
 						() => { 
 								// место для функции по клику на пациента
                                 drawPatientsPath(l);
 							}, 
 						Color.Zero );
-					id++;
-				}
+					//id++;
+				
 			}
+
+			verticalOffset = 0;
+			int y = verticalOffset + 5;
+				foreach (var child in rightPanel.Children){
+					child.Y = y;
+					y += child.Height + 10;
+				}
 
 		}
 
