@@ -8,36 +8,36 @@ using System.IO;
 namespace GraphVis
 {
 	public class StanfordNetwork : GraphFromFile
-	{
-		const int maxNodes = 50000;
+	{//отсюда
+		const int maxNodes = 50000; //кол-во макс. допустимых точек
 
 		public override void ReadFromFile(string path)
 		{
-			var lines = File.ReadAllLines(path);
-			Dictionary<int, int> nodeId_NodeNumber = new Dictionary<int, int>();	
-			List<int> nodeDegrees = new List<int>();
+			var lines = File.ReadAllLines(path); //открывается файл, считывает все строки и закр. его
+			Dictionary<int, int> nodeId_NodeNumber = new Dictionary<int, int>(); //создается словарь айдишников	
+			List<int> nodeDegrees = new List<int>(); //создается коллекция
 
-			int numOfNodesAdded = 0;
-			if (lines.Length > 0)
+			int numOfNodesAdded = 0; 
+			if (lines.Length > 0)    //если файл не пустой            
 			{
-				// construct dictionary to convert id to number:
-				foreach (var line in lines)
+				// создается словарь с конвертацией айдишников:
+				foreach (var line in lines) //для каждого элемента с файла
 				{
-					if (line.Length < 4)
+					if (line.Length < 4)   //если длина строки меньше 4
 						continue;
-					if (line.ElementAt(0) != '#')
+                    if (line.ElementAt(0) != '#') //если строка не символ #
 					{
-						string[] parts;
-						parts = line.Split(new Char[] { '\t', ' ' });
-						int index1 = int.Parse(parts[0]);
-						int index2 = int.Parse(parts[1]);
+						string[] parts; //создаем массив
+						parts = line.Split(new Char[] { '\t', ' ' }); // возвращение массива строк
+						int index1 = int.Parse(parts[0]); //первый столбец
+						int index2 = int.Parse(parts[1]); //второй
 
-						if (!nodeId_NodeNumber.ContainsKey(index1))
+						if (!nodeId_NodeNumber.ContainsKey(index1)) //если первой столбец не содержится в 
 						{
-							nodeId_NodeNumber.Add(index1, numOfNodesAdded);
+							nodeId_NodeNumber.Add(index1, numOfNodesAdded); // добавляем значение
 							++numOfNodesAdded;
 						}
-						if (!nodeId_NodeNumber.ContainsKey(index2))
+						if (!nodeId_NodeNumber.ContainsKey(index2)) // тоже самое
 						{
 							nodeId_NodeNumber.Add(index2, numOfNodesAdded);
 							++numOfNodesAdded;
@@ -48,29 +48,25 @@ namespace GraphVis
                 //t.Contains(2);
 
 				int numNodes = maxNodes < nodeId_NodeNumber.Count ? maxNodes : nodeId_NodeNumber.Count;
-				// add nodes:
+				// создаем точки:
 				for (int i = 0; i < numNodes; ++i)
 				{
-                    //if (i =) {
-                    //    AddNode(new NodeWithText("", 3.0f, Fusion.Mathematics.Color.Red));
-                    //}
-                    //else
                     {
                         AddNode(new NodeWithText());
                     }
                     nodeDegrees.Add(0);
 				}
 
-				// add edges:
+				// создаем ребра:
 				Console.WriteLine("checking...");
 				foreach ( var line in lines )
 				{
 					if (line.Length < 4)
 						continue;
-					if (line.ElementAt(0) != '#')
+					if (line.ElementAt(0) != '#') //если элемент не символ #, то создаем  массив, состоящий из 2 столбцов
 					{
 						string[] parts;
-						parts = line.Split(new Char[] {'\t', ' '});
+						parts = line.Split(new Char[] {'\t', ' '}); //разбиение на подстроки
 						int index1 = nodeId_NodeNumber[int.Parse(parts[0])];
 						int index2 = nodeId_NodeNumber[int.Parse(parts[1])];		
 						
@@ -101,7 +97,7 @@ namespace GraphVis
 				}
 				Console.WriteLine("max degree = " + maxDegree);
 			}
-		}
+		} //до сюда
 
 		public void ReadFromFileInforNode(String filename, Dictionary<int, String> dict)
 		{
@@ -136,7 +132,7 @@ namespace GraphVis
         }
 
        
-        public void ReadFromFilePatientData(String dirName, Dictionary<int, String> dict, Dictionary<int, List<Visit>> patData)
+        public void ReadFromFilePatientData(String dirName, Dictionary<String, int> dict, Dictionary<int, List<Visit>> patData, Dictionary<int,int> graphEdges)
 		{
 			string[] files = Directory.GetFiles(dirName);
             // run to pac
@@ -156,7 +152,9 @@ namespace GraphVis
 				    foreach (var line in lines)
 				    {					    
                         var parts = line.Split(';');
-                        string date = parts[0];
+                        string date = parts[0].Replace("\"", "").Trim();
+                        if (date.Length > 14)
+                            date = date.Remove(14);
 					    string doctor = parts[1];
                         doctor = doctor.Trim().Replace("(", "").Replace(")", "");
 
@@ -164,29 +162,48 @@ namespace GraphVis
                         string cat = category[0].Trim();
                         string fio = category[1].Trim().Replace("\"", "");
                         int iddoc = 9999;
-                        for (int i = 0; i < dict.Keys.Count - 1; i++)
-                        {
-                            if (dict[i] == fio)
-                                iddoc = i;
+                        if (dict.Count != 0) {
+                            if (dict.ContainsKey(fio)) { dict.TryGetValue(fio, out iddoc); }
+                            else {
+                                iddoc = dict.Count + 1;
+                                dict.Add(fio, iddoc);
+                            };
 
-                            else
-                            {
-                                dict[i+1] = doctor;
-
-                            }
                         }
-
-                        //int iddoc = Dictionary.Key.Value;
+                        else {
+                            iddoc = 1;
+                            dict.Add(fio, iddoc);
+                        }
+                        
 
                         string dateFormat = "dd'.'MM'.'yy' 'HH':'mm";
-                       
+                        
                         var dateNew = DateTime.ParseExact(date, dateFormat, null);
 
                         list.Add(new Visit {Date = dateNew, Fio = fio, Categ = cat, Id = iddoc});
                         
                         
 				    }
+                    list.Sort((one, two) => one.Date.CompareTo(two.Date));
+
+                    for (int i = 0; i < list.Count - 1; i++)
+                    {
+                        if (i < list.Count - 2)
+                        {
+                            if (list[i].Id != list[i + 1].Id) graphEdges.Add(list[i].Id, list[i + 1].Id);
+                        }
+                    }    
+
                     patData.Add(pid, list);
+                    
+                    //foreach (List[i].Id in patData)
+                   
+                    {       
+                     //   patData[pid][i].Id
+                        //int array = new int
+                    }
+                
+                    
 			    }
             }
 		}
