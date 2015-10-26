@@ -276,7 +276,7 @@ namespace GraphVis
 				//				StanfordNetwork graph = new StanfordNetwork();
 				stNet = new StanfordNetwork();
                 // TODO: add path file
-                stNet.ReadFromFile("../../../../Graf.txt");
+                //stNet.ReadFromFile("../../../../Graf.txt");
                 Dictionary<String, int> dict = new Dictionary<String, int>();
 			    doctorToPatients = new Dictionary<Doctor, HashSet<Patient>>();
 
