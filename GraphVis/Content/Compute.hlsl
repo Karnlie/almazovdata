@@ -278,6 +278,9 @@ void CSMain(
 		
 //		p.Position.xyz += mul( p.Velocity, Params.DeltaTime );
 //		p.Velocity += mul( p.Force, Params.DeltaTime );
+	if(length(p.Force) > 1000.0f) {
+		p.Force = normalize(p.Force)*1000.0f;
+	}
 
 		p.Position.xyz += mul( p.Force, Params.DeltaTime );
 		particleRWBuffer[ id ] = p;

@@ -157,7 +157,7 @@
     <CSEntryPoint>CSMain</CSEntryPoint>
     <SourceFile>Compute.hlsl</SourceFile>
     <ShowPemutations>false</ShowPemutations>
-    <ListingPath>E:\CodeProgram\VS2012\almazovdata\GraphVis\Content\Temp\1899D2215792452F122591D2CF41D839.html</ListingPath>
+    <ListingPath>C:\GitHub\almazovdata\GraphVis\Content\Temp\1899D2215792452F122591D2CF41D839.html</ListingPath>
   </Asset>
   <Asset xsi:type="ImageFileTextureAsset">
     <AssetPath>selection.tga</AssetPath>
