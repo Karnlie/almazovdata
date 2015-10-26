@@ -351,6 +351,7 @@ namespace GraphVis {
         public void SelectPath(ICollection<int> nodeIndices)
         {
             Deselect();
+            
             if (selectedNodesBuffer != null)
             {
                 selectedNodesBuffer.Dispose();
@@ -374,10 +375,15 @@ namespace GraphVis {
                     }
                 }
             }
+            if (selEdges.Count() < 1)
+            {
+                return;
+            }
             selectedNodesBuffer = new StructuredBuffer(Game.GraphicsDevice, typeof(int), nodeIndices.Count, StructuredBufferFlags.Counter);
             selectedEdgesBuffer = new StructuredBuffer(Game.GraphicsDevice, typeof(int), selEdges.Count, StructuredBufferFlags.Counter);
             selectedNodesBuffer.SetData(nodeIndices.ToArray());
             selectedEdgesBuffer.SetData(selEdges.ToArray());
+            
             numSelectedNodes = nodeIndices.Count;
             numSelectedEdges = selEdges.Count;
         }

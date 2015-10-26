@@ -21,7 +21,9 @@ namespace GraphVis
 		Random rnd = new Random();
 		int selectedNodeIndex;
 
-		Dictionary<int, int> nodeId_NodeNumber = new Dictionary<int, int>();
+        List<Frame> listPatientsButton = new List<Frame>();
+        List<Frame> listVisitButton = new List<Frame>();
+        Dictionary<int, int> nodeId_NodeNumber = new Dictionary<int, int>();
 
 		SpriteFont font1;
 	    private SpriteFont labelFontNormal;
@@ -97,7 +99,7 @@ namespace GraphVis
 			{
 				rightPanel.Height = GraphicsDevice.DisplayBounds.Height;
                 rightPanel.Width = GraphicsDevice.DisplayBounds.Width;
-				foreach (var child in rightPanel.Children){
+				foreach (var child in listPatientsButton){
 					child.X = rightPanel.Width - 200;
 				}
             };
@@ -137,7 +139,7 @@ namespace GraphVis
 
 				int y = verticalOffset + 5;
 
-				foreach (var child in rightPanel.Children){
+				foreach (var child in listPatientsButton){
 					child.Y = y;
 
 					y += child.Height + 10;
@@ -427,6 +429,7 @@ namespace GraphVis
             {
 				//ClippingMode = ClippingMode.ClipByFrame,
 			};
+
 			int buttonHeight    = rightPanel.Font.LineHeight;
 			int buttonWidth     = 200;
 
@@ -434,11 +437,22 @@ namespace GraphVis
 				//Anchor = FrameAnchor.Top | FrameAnchor.Right,
 				//PaddingLeft = 25,
 			};
-			rightPanel.Add( doctor );
+		    listPatientsButton.Add(doctor);
             
-			AddButton( rightPanel, rightPanel.Width - buttonWidth, doctor.Height + 10, buttonWidth, buttonHeight, "List of Patients", FrameAnchor.Top | FrameAnchor.Left,
-				//() => { for ( int i = 2; i < rightPanel.Children.Count(); i++ ) { var c = rightPanel.Children.ElementAt(i); c.Visible = !c.Visible; } }, Color.Zero );
-				() => { }, Color.Zero );
+			rightPanel.Add( doctor );
+
+		    listPatientsButton.Add(
+                AddButton(
+                    rightPanel, 
+                    rightPanel.Width - buttonWidth,
+                    doctor.Height + 10,
+                    buttonWidth,
+                    buttonHeight, 
+                    "List of Patients",
+                    FrameAnchor.Top | FrameAnchor.Left,
+		        //() => { for ( int i = 2; i < rightPanel.Children.Count(); i++ ) { var c = rightPanel.Children.ElementAt(i); c.Visible = !c.Visible; } }, Color.Zero );
+		            () => { }, Color.Zero)
+                );
 
 		}
 
@@ -447,37 +461,43 @@ namespace GraphVis
 			int buttonHeight    = rightPanel.Font.LineHeight;	
 			int buttonWidth		= 200;	
 			//int size = rightPanel.Children.Count();
-            while (rightPanel.Children.Count() > 2)
-            {
-                rightPanel.Remove(rightPanel.Children.ElementAt(2));
-            }
-			
+//		    foreach (var patientButton in listPatientsButton)
+//		    {
+//                rightPanel.Remove(patientButton);
+//		    }
+            while (listPatientsButton.Count>2)
+		    {
+                rightPanel.Remove(listPatientsButton[2]);
+                listPatientsButton.RemoveAt(2);
+		    }
+//            listPatientsButton.Clear();
+		
 			int width = GraphicsDevice.DisplayBounds.Width;
 			//int id = 1;
 			foreach ( var l in list ) {
 				String s = l.id;
-				
-				
-					AddButton( rightPanel, width - buttonWidth,  0, buttonWidth, buttonHeight, s, FrameAnchor.Top | FrameAnchor.Left, 
-						() => { 
-								// место для функции по клику на пациента
-                                drawPatientsPath(l);
-							}, 
-						Color.Zero );
-					//id++;
-				
+			    listPatientsButton.Add(
+                    AddButton(
+			        rightPanel,
+			        width - buttonWidth,
+			        0,
+			        buttonWidth,
+			        buttonHeight, s,
+			        FrameAnchor.Top | FrameAnchor.Left,
+			        () => { drawPatientsPath(l); },
+			        Color.Zero)
+			    );
 			}
-
 			verticalOffset = 0;
 			int y = verticalOffset + 5;
-				foreach (var child in rightPanel.Children){
-					child.Y = y;
-					y += child.Height + 10;
-				}
+			foreach (var child in listPatientsButton){
+				child.Y = y;
+				y += child.Height + 10;
+			}
 
 		}
 
-		void AddButton(Frame parent, int x, int y, int w, int h, string text, FrameAnchor anchor, Action action, Color bcol, bool visibility = true) {
+		Frame AddButton(Frame parent, int x, int y, int w, int h, string text, FrameAnchor anchor, Action action, Color bcol, bool visibility = true) {
 			var button = new Frame( this, x, y, w, h, text, Color.White ) {
 				Anchor = anchor,
 				TextAlignment = Alignment.MiddleCenter,
@@ -503,59 +523,100 @@ namespace GraphVis
 			};
 
 			parent.Add( button );
+		    return button;
 		}
 
-		 void AddImageButton(Frame parent, int x, int y, int w, int h, string img, string text, Color color, Color colorH, Color colorP, Action action)
+        Frame AddMapButton(Frame parent, int x, int y, int w, int h, string img, string text, Action action)
         {
             var button = new Frame(this, x, y, w, h, text, Color.Zero)
             {
                 Image = Content.Load<Texture2D>(img),
-                ImageColor = Color.White,
-                ImageMode = FrameImageMode.Centered,
-               // Font = Game.GetService<Dashboard>().labelFontAccent, 
-				TextAlignment = Alignment.MiddleLeft,
-                TextOffsetX = 45,
+                ImageColor = Color.Orange,
+                ImageMode = FrameImageMode.Stretched,
+                Font = labelFontNormal,
+              //  Font = Game.GetService<Dashboard>().plotLightFont,
+                ImageOffsetX = 45,
+                //ImageOffsetY = -20,
+                TextAlignment = Alignment.MiddleCenter,
+                TextOffsetY = 0,
+                TextOffsetX = 0,
                 Anchor = FrameAnchor.Top | FrameAnchor.Right,
+                ForeColor = Color.Red,
+                TextEffect = TextEffect.Shadow
             };
-            
             button.StatusChanged += (s, e) =>
             {
-                if (e.Status == FrameStatus.None)       { button.ImageColor = color;  button.ForeColor = Color.Zero; }
-                if (e.Status == FrameStatus.Hovered)    { button.ImageColor = colorH; button.ForeColor = Color.White; }
-                if (e.Status == FrameStatus.Pushed)     { button.ImageColor = colorP; button.ForeColor = colorH;}
+                if (e.Status == FrameStatus.None) { button.ImageColor = new Color(255, 255, 255, 128); button.ForeColor = Color.Black; button.BackColor = Color.Zero; }
+                if (e.Status == FrameStatus.Hovered) { button.ImageColor = Color.Orange; button.ForeColor = Color.White; button.BackColor = Color.Zero; }
+                if (e.Status == FrameStatus.Pushed) { button.ImageColor = Color.LightGray; button.ForeColor = Color.White; button.BackColor = Color.Zero; }
             };
-            
+
             if (action != null)
             {
                 button.Click += (s, e) => action();
             }
-            
+
             parent.Add(button);
+            return button;
         }
 
-	    public void drawPatientsPath(Patient patient)
+
+	    public void drawPatientsPath(Patient patient, bool reDraw = true)
 	    {
-            var graphSys = GetService<GraphSystem>();
-            graphSys.SelectPath(patient.visitList.Select(visit => visit.id).ToList());
-            var visitByDate = patient.visitList.GroupBy(visit => visit.date.ToString("dd MMM yyyy"));
-	        int countVisitByDate = visitByDate.Count();
-	        if (countVisitByDate > 25)
+
+
+	        if (!reDraw)
 	        {
-                visitByDate = patient.visitList.GroupBy(visit => visit.date.ToString("dd MMM"));
-                countVisitByDate = visitByDate.Count();
+                var graphSys = GetService<GraphSystem>();
+                graphSys.SelectPath(patient.visitList.Select(visit => visit.id).ToList());
 	        }
-	        var width = GraphicsDevice.DisplayBounds.Width/countVisitByDate;
-	        var height = 10;
-            var x = 0;
-	        int y = GraphicsDevice.DisplayBounds.Height*95/100;
-            int yNext = GraphicsDevice.DisplayBounds.Height * 99 / 100;
-	        foreach (var visit in visitByDate)
+	        else
 	        {
-                AddButton(rightPanel, x, y, width, height, visit.Key.ToString(), FrameAnchor.Top | FrameAnchor.Left,() =>{},Color.Zero);
-                AddButton(rightPanel, x, yNext, width, height, visit.Count().ToString(), FrameAnchor.Top | FrameAnchor.Left, () => { }, Color.Zero);
-	            x += width;
+                while (listVisitButton.Count > 0)
+                {
+                    rightPanel.Remove(listVisitButton[0]);
+                    listVisitButton.RemoveAt(0);
+                }
+                var graphSys = GetService<GraphSystem>();
+                graphSys.SelectPath(patient.visitList.Select(visit => visit.id).ToList());
+
+                var visitByDate = patient.visitList.GroupBy(visit => visit.date.ToString("dd MMM yyyy"));
+                int countVisitByDate = visitByDate.Count();
+                if (countVisitByDate > 25)
+                {
+                    visitByDate = patient.visitList.GroupBy(visit => visit.date.ToString("dd MMM"));
+                    countVisitByDate = visitByDate.Count();
+                }
+                var width = (GraphicsDevice.DisplayBounds.Width - 200) / countVisitByDate;
+                var height = 10;
+                var maxVisits = visitByDate.Max(visits => visits.Count());
+                var radiusMin = 15;
+                var radiusMax = 100;
+                var x = 0;
+                int y = GraphicsDevice.DisplayBounds.Height * 95 / 100;
+                int yNext = GraphicsDevice.DisplayBounds.Height * 85 / 100;
+
+                foreach (var visit in visitByDate)
+                {
+                    var radius = (((float)visit.Count()) / maxVisits) * (radiusMax - radiusMin) + radiusMin;
+                    listVisitButton.Add(AddButton(rightPanel, x, y, width, height, visit.Key.ToString(), FrameAnchor.Top | FrameAnchor.Left, () => { }, Color.Zero));
+                    var button = AddMapButton(rightPanel, x, yNext, (int)radius, (int)radius, "node",
+                        visit.Count().ToString(), () => { });
+                    button.MouseIn += (s, e) => drawPatientsPathDay(visit.ToArray());
+                    button.MouseOut += (s, e) => drawPatientsPath(patient, false);
+                    listVisitButton.Add(button);
+                    x += width;
+                }
 	        }
+            
 	    }
+
+
+        public void drawPatientsPathDay(Visit[] listVisit)
+        {
+            var graphSys = GetService<GraphSystem>();
+            graphSys.SelectPath(listVisit.Select(visit => visit.id).ToList());
+        }
 
 
 	}
