@@ -189,5 +189,16 @@ namespace GraphVis
             Console.WriteLine("max degree = " + maxDegree);
             
         }
+
+	    public void paintPathPatient(Patient patient)
+	    {
+            for (int i = 0; i<patient.visitList.Count - 1; i++)
+            {  
+                int index1 = patient.visitList[i].id;
+                int index2 = patient.visitList[i + 1].id;
+	            
+	        }
+	        
+	    }
 	}
 }

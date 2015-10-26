@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 using System.ComponentModel;
 using System.IO;
-
+using System.Security.Cryptography.X509Certificates;
 using Fusion;
 using Fusion.Graphics;
 using Fusion.Mathematics;
@@ -323,6 +323,7 @@ namespace GraphVis {
 
 		public void Select(ICollection<int> nodeIndices)
 		{
+            Deselect();
 			if (selectedNodesBuffer != null)
 			{
 				selectedNodesBuffer.Dispose();
@@ -346,6 +347,40 @@ namespace GraphVis {
 			numSelectedNodes = nodeIndices.Count;
 			numSelectedEdges = selEdges.Count;
 		}
+
+        public void SelectPath(ICollection<int> nodeIndices)
+        {
+            Deselect();
+            if (selectedNodesBuffer != null)
+            {
+                selectedNodesBuffer.Dispose();
+            }
+            if (selectedEdgesBuffer != null)
+            {
+                selectedEdgesBuffer.Dispose();
+            }
+            List<int> selEdges = new List<int>();
+            //nodeIndices = nodeIndices.Distinct().ToArray();
+            for(int i=0; i<nodeIndices.Count-1; i++)
+            {
+                int index1 = nodeIndices.ElementAt(i);
+                int index2 = nodeIndices.ElementAt(i + 1);
+                foreach (var indexEdge in edgeIndexLists[index1])
+                {
+                    if (edgeList[indexEdge].par1 == index1 && edgeList[indexEdge].par2 == index2
+                        || edgeList[indexEdge].par2 == index1 && edgeList[indexEdge].par1 == index2)
+                    {
+                        selEdges.Add(indexEdge);
+                    }
+                }
+            }
+            selectedNodesBuffer = new StructuredBuffer(Game.GraphicsDevice, typeof(int), nodeIndices.Count, StructuredBufferFlags.Counter);
+            selectedEdgesBuffer = new StructuredBuffer(Game.GraphicsDevice, typeof(int), selEdges.Count, StructuredBufferFlags.Counter);
+            selectedNodesBuffer.SetData(nodeIndices.ToArray());
+            selectedEdgesBuffer.SetData(selEdges.ToArray());
+            numSelectedNodes = nodeIndices.Count;
+            numSelectedEdges = selEdges.Count;
+        }
 
 		public void Deselect()
 		{

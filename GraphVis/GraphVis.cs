@@ -394,8 +394,11 @@ namespace GraphVis
 			else
 			{
 				ds.Add(Color.Orange, "No selection");
-				pSys.Deselect();
+				//pSys.Deselect();
 			}
+
+
+
 		}
 
 		public Dictionary<int, string> dict { get; set; }
@@ -423,6 +426,11 @@ namespace GraphVis
 		void CreatePatientList(HashSet<Patient> list) {
 			int buttonHeight    = rightPanel.Font.LineHeight;			
 			int id = 1;
+            for (int i = 2; i < rightPanel.Children.Count(); i++)
+            {
+                //rightPanel.Children.ElementAt( i ).Text = "";
+                rightPanel.Remove(rightPanel.Children.ElementAt(i));
+            }
 			//bool vis = false;
 			int latestY = rightPanel.Children.ElementAt( 1 ).Y;
 			foreach ( var l in list ) {
@@ -442,10 +450,7 @@ namespace GraphVis
 					id++;
 				}
 			}
-			for ( int i = id + 1 ; i < rightPanel.Children.Count(); i++ ) {
-				//rightPanel.Children.ElementAt( i ).Text = "";
-				rightPanel.Remove(rightPanel.Children.ElementAt( i ));
-			}
+
 		}
 
 		void AddButton(Frame parent, int x, int y, int w, int h, string text, FrameAnchor anchor, Action action, Color bcol, bool visibility = true) {
@@ -478,13 +483,21 @@ namespace GraphVis
 
 	    public void drawPatientsPath(Patient patient)
 	    {
-            var sb = GetService<SpriteBatch>();
-            int width = GraphicsDevice.DisplayBounds.Width;
-            int height = GraphicsDevice.DisplayBounds.Height;
-	        var visitByDate = patient.visitList.GroupBy(visit => visit.date.Day);
-            sb.Begin();
-                font1.DrawString(sb, "Id # " + selectedNodeIndex , 44, height - 20, Color.White);
-            sb.End();
+//            var sb = GetService<SpriteBatch>();
+//            int width = GraphicsDevice.DisplayBounds.Width;
+//            int height = GraphicsDevice.DisplayBounds.Height;
+//	        var visitByDate = patient.visitList.GroupBy(visit => visit.date.Day);
+//            sb.Begin();
+//                font1.DrawString(sb, "Id # " + selectedNodeIndex , 44, height - 20, Color.White);
+//            sb.End();
+
+
+			if (rightPanel.GetBorderedRectangle().Contains(InputDevice.MousePosition)){
+                // TODO draw path
+                var graphSys = GetService<GraphSystem>();
+                graphSys.SelectPath(patient.visitList.Select(visit => visit.id).ToList());
+			} 
+		
 	    }
 	}
 }
