@@ -121,6 +121,20 @@ namespace GraphVis.HelperFiles
 //            }
             //File.WriteAllLines("myfile.txt",
                // doctorToPatients.Select(x => x.Key.id + ";" + x.Key.fio + ";" + x.Key.category).ToArray());
+
+//            using (StreamWriter sw = new StreamWriter("myfile.txt"))
+//            {
+//                foreach (var doc_patient in doctorToPatients)
+//                {
+//                    sw.Write(doc_patient.Key.id + ";" + doc_patient.Key.fio + ";" + doc_patient.Key.category + ";\n");
+//                    foreach (var patient in doc_patient.Value)
+//                    {
+//                        sw.Write(";"+patient+"\n");
+//                    }
+//
+//                    //break;
+//                }
+//            }
         }
 
         private static DateTime getNiceDate(String dateString)

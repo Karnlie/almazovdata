@@ -90,14 +90,14 @@ namespace GraphVis
 
 			//add gui interface
 			var ui = GetService<UserInterface>();
-			CreatePanel();
-			ui.RootFrame = rightPanel;
+            CreatePanel();
+            ui.RootFrame = rightPanel;
 			ui.SettleControls();
 			GraphicsDevice.DisplayBoundsChanged += (s, e) =>
 			{
 				rightPanel.Height = GraphicsDevice.DisplayBounds.Height;
-				rightPanel.X = GraphicsDevice.DisplayBounds.Width - 200;
-			};
+                rightPanel.Width = GraphicsDevice.DisplayBounds.Width;
+            };
 
 			//	add keyboard handler :
 			InputDevice.KeyDown += InputDevice_KeyDown;
@@ -405,7 +405,8 @@ namespace GraphVis
 
 		
 		void CreatePanel() {
-			rightPanel = new Frame( this, GraphicsDevice.DisplayBounds.Width - 200, 0, 200, GraphicsDevice.DisplayBounds.Height, "", new Color( 20, 20, 20 ) ) {
+            rightPanel = new Frame(this, 0, 0, GraphicsDevice.DisplayBounds.Width, GraphicsDevice.DisplayBounds.Height, "", new Color(20, 20, 20, 0f))
+            {
 				//ClippingMode = ClippingMode.ClipByFrame,
 			};
 			int buttonHeight    = rightPanel.Font.LineHeight;
@@ -490,14 +491,28 @@ namespace GraphVis
 //            sb.Begin();
 //                font1.DrawString(sb, "Id # " + selectedNodeIndex , 44, height - 20, Color.White);
 //            sb.End();
-
-
-			if (rightPanel.GetBorderedRectangle().Contains(InputDevice.MousePosition)){
-                // TODO draw path
-                var graphSys = GetService<GraphSystem>();
-                graphSys.SelectPath(patient.visitList.Select(visit => visit.id).ToList());
-			} 
-		
+            var graphSys = GetService<GraphSystem>();
+            graphSys.SelectPath(patient.visitList.Select(visit => visit.id).ToList());
+            var visitByDate = patient.visitList.GroupBy(visit => visit.date.ToString("dd/MM/yyyy"));
+	        int countVisitByDate = visitByDate.Count();
+	        if (countVisitByDate > 25)
+	        {
+                visitByDate = patient.visitList.GroupBy(visit => visit.date.ToString("MM/yyyy"));
+                countVisitByDate = visitByDate.Count();
+	        }
+	        var width = GraphicsDevice.DisplayBounds.Width/countVisitByDate;
+	        var height = 10;
+            var x = 0;
+	        int y = GraphicsDevice.DisplayBounds.Height*95/100;
+            int yNext = GraphicsDevice.DisplayBounds.Height * 99 / 100;
+	        foreach (var visit in visitByDate)
+	        {
+                AddButton(rightPanel, x, y, width, height, visit.Key.ToString(), FrameAnchor.Top | FrameAnchor.Left,() =>{},Color.Zero);
+                AddButton(rightPanel, x, yNext, width, height, visit.Count().ToString(), FrameAnchor.Top | FrameAnchor.Left, () => { }, Color.Zero);
+	            x += width;
+	        }
 	    }
+
+
 	}
 }
