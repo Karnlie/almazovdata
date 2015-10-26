@@ -56,7 +56,7 @@ namespace GraphVis.HelperFiles
         static int defaultId;
         public static void ReadFromFilePatientData(String dirName, Dictionary<String, int> dict, Dictionary<Doctor, HashSet<Patient>> doctorToPatients)
         {
-            defaultId = dict.Values.Max()+1;
+            defaultId = 0;
             string[] files = Directory.GetFiles(dirName);
             // бегаем по пациентам
             foreach (string filename in files)

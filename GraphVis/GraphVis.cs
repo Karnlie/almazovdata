@@ -24,6 +24,7 @@ namespace GraphVis
 		Dictionary<int, int> nodeId_NodeNumber = new Dictionary<int, int>();
 
 		SpriteFont font1;
+	    private SpriteFont labelFontNormal;
 
 		Vector3 selectedNodePos;
 		bool isSelected;
@@ -79,6 +80,7 @@ namespace GraphVis
 			//	initialize services :
 			base.Initialize();
 			font1 = Content.Load<SpriteFont>("headerFont");
+            labelFontNormal = Content.Load<SpriteFont>("labelFontNormal");
 			var cam = GetService<Camera>();
 			cam.Config.FreeCamEnabled = false;
 			selectedNodeIndex = 0;
@@ -280,7 +282,7 @@ namespace GraphVis
                 Dictionary<String, int> dict = new Dictionary<String, int>();
 			    doctorToPatients = new Dictionary<Doctor, HashSet<Patient>>();
 
-                ReaderFiles.ReadFromFileDoctorList("../../../../Doctordata.txt", dict);
+               // ReaderFiles.ReadFromFileDoctorList("../../../../Doctordata.txt", dict);
                 ReaderFiles.ReadFromFilePatientData("../../../../almazovdata", dict, doctorToPatients);
                 stNet.BuildGraphFromDictinary(doctorToPatients);
 				graphSys.AddGraph(stNet);
@@ -357,24 +359,24 @@ namespace GraphVis
 			var ds = GetService<DebugStrings>();
 			if (isSelected)
 			{
+                Doctor doctor = doctorToPatients.Keys.First(x => x.id == selectedNodeIndex );
+				HashSet<Patient> patients;
+				doctorToPatients.TryGetValue( doctor, out patients);
+				CreatePatientList(patients);
 				ds.Add(Color.Orange, "Selected node # " + selectedNodeIndex);
 				String info = "";
                 dict = new Dictionary<int, string>();
-				
 
+			   
 				sb.Begin();
-				font1.DrawString( sb, "Id # " + selectedNodeIndex + ": " + info, 44, height - 50 , Color.White );
-				
+				font1.DrawString( sb, "Id # " + selectedNodeIndex + ": " + doctor.fio + ": " + doctor.category, 44, height - 50 , Color.White );
 				sb.End();
                 Console.WriteLine(); //вывод имен файлов
 				pSys.Select(selectedNodeIndex);
 
 				//вывод в панель пациентов и врача
 				rightPanel.Children.ElementAt( 0 ).Text = "Id # " + selectedNodeIndex;
-				Doctor doctor = doctorToPatients.Keys.First(x => x.id == selectedNodeIndex );
-				HashSet<Patient> patients;
-				doctorToPatients.TryGetValue( doctor, out patients);
-				CreatePatientList(patients);
+
 			}
 			else
 			{
@@ -398,7 +400,7 @@ namespace GraphVis
 				PaddingLeft = 25,
 			};
 			rightPanel.Add( doctor );
-
+            
 			AddButton( rightPanel, 0, doctor.Height * 2 + 10, buttonWidth, buttonHeight, "List of Patients", FrameAnchor.Top | FrameAnchor.Left,
 				//() => { for ( int i = 2; i < rightPanel.Children.Count(); i++ ) { var c = rightPanel.Children.ElementAt(i); c.Visible = !c.Visible; } }, Color.Zero );
 				() => { }, Color.Zero );
@@ -416,9 +418,10 @@ namespace GraphVis
 					rightPanel.Children.ElementAt( 1 + id++ ).Text = s;
 				}
 				else {
-					AddButton( rightPanel, 0, buttonHeight * 3 + 10 + buttonHeight * (id - 1) * 2, rightPanel.Width, buttonHeight * 2, s, FrameAnchor.Top | FrameAnchor.Left, 
+					AddButton( rightPanel, 0, buttonHeight * 3 + 10 + buttonHeight * (id - 1) , rightPanel.Width, buttonHeight, s, FrameAnchor.Top | FrameAnchor.Left, 
 						() => { 
 								// место для функции по клику на пациента
+                                drawPatientsPath(l);
 							}, 
 						Color.Zero );
 					id++;
@@ -435,6 +438,7 @@ namespace GraphVis
 				Anchor = anchor,
 				TextAlignment = Alignment.MiddleLeft,
 				PaddingLeft = 25,
+                Font = labelFontNormal,
 				Visible = visibility,
 			};
 			Color testcol = new Color( 51, 51, 51, 255 );
@@ -456,5 +460,16 @@ namespace GraphVis
 
 			parent.Add( button );
 		}
+
+	    public void drawPatientsPath(Patient patient)
+	    {
+            var sb = GetService<SpriteBatch>();
+            int width = GraphicsDevice.DisplayBounds.Width;
+            int height = GraphicsDevice.DisplayBounds.Height;
+	        var visitByDate = patient.visitList.GroupBy(visit => visit.date.Day);
+            sb.Begin();
+                font1.DrawString(sb, "Id # " + selectedNodeIndex , 44, height - 20, Color.White);
+            sb.End();
+	    }
 	}
 }
