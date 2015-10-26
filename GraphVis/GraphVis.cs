@@ -120,11 +120,19 @@ namespace GraphVis
 			}
 			base.Dispose(disposing);
 		}
-
+				
 		void inputDevice_MouseScroll(object sender, Fusion.Input.InputDevice.MouseScrollEventArgs e)
 		{
-			var cam = GetService<GreatCircleCamera>();
-			cam.DollyZoom(e.WheelDelta / 60.0f);
+			if (rightPanel.GetBorderedRectangle().Contains(InputDevice.MousePosition) && e.WheelDelta != 0){
+				int maxwheel = rightPanel.Children.ElementAt(rightPanel.Children.Count() - 1).Y + 2 * rightPanel.Font.LineHeight;
+				float bottom_boundary = maxwheel - rightPanel.Height;
+				float top_boundary    = rightPanel.Y - rightPanel.Children.ElementAt(0).Y;
+				if ( bottom_boundary >= 0 && e.WheelDelta < 0) rightPanel.ForEachChildren( x => x.Y += e.WheelDelta);
+				if ( top_boundary >= 0 && e.WheelDelta > 0) rightPanel.ForEachChildren( x => x.Y += e.WheelDelta);
+			} else {
+				var cam = GetService<GreatCircleCamera>();
+				cam.DollyZoom(e.WheelDelta / 60.0f);
+			}
 		}
 
 
@@ -232,12 +240,16 @@ namespace GraphVis
 					{
 						Console.WriteLine(((NodeWithText)stNet.Nodes[selectedNodeIndex]).Text);
 					}
+					int j = 0;
+					rightPanel.ForEachChildren(x =>  x.Y =  rightPanel.Font.LineHeight * j++ * 2 + 10);
 				}
 				else
 				{
 					isSelected = false;
 				}
 			}
+
+			
 
 		}
 
@@ -372,6 +384,7 @@ namespace GraphVis
 				font1.DrawString( sb, "Id # " + selectedNodeIndex + ": " + doctor.fio + ": " + doctor.category, 44, height - 50 , Color.White );
 				sb.End();
                 Console.WriteLine(); //вывод имен файлов
+				
 				pSys.Select(selectedNodeIndex);
 
 				//вывод в панель пациентов и врача
@@ -408,13 +421,15 @@ namespace GraphVis
 		}
 
 		void CreatePatientList(HashSet<Patient> list) {
+			int buttonHeight    = rightPanel.Font.LineHeight;			
 			int id = 1;
-			int buttonHeight    = rightPanel.Font.LineHeight;
 			//bool vis = false;
+			int latestY = rightPanel.Children.ElementAt( 1 ).Y;
 			foreach ( var l in list ) {
 				String s = l.id;
 				if ( ( 2 + id ) <= rightPanel.Children.Count() ) {
 					//vis = rightPanel.Children.ElementAt( 1 + id ).Visible;
+					//latestY = rightPanel.Children.ElementAt( id).Y;
 					rightPanel.Children.ElementAt( 1 + id++ ).Text = s;
 				}
 				else {
