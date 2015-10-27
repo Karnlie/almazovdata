@@ -38,6 +38,8 @@ namespace GraphVis
 		Frame rightPanel;
 		Dictionary<Doctor, HashSet<Patient>> doctorToPatients;
 
+	    private Doctor selectedDoctor;
+
 
 		/// <summary>
 		/// GraphVis constructor
@@ -345,24 +347,14 @@ namespace GraphVis
 			var cam = GetService<GreatCircleCamera>();
 			var dr = GetService<DebugRender>();
 			var pSys = GetService<GraphSystem>();
-			var sb = GetService<SpriteBatch>();
+	        
+
 			dr.View = cam.GetViewMatrix(stereoEye);
 			dr.Projection = cam.GetProjectionMatrix(stereoEye);
-
-            int width = GraphicsDevice.DisplayBounds.Width;
-            int height = GraphicsDevice.DisplayBounds.Height;
-			//		dr.DrawGrid(20);
 			var ds = GetService<DebugStrings>();
 			if (isSelected)
 			{
-                Doctor doctor = doctorToPatients.Keys.First(x => x.id == selectedNodeIndex );
-				//ds.Add(Color.Orange, "Selected node # " + selectedNodeIndex);
-				String info = "";
-				sb.Begin();
-				font1.DrawString( sb, "Id # " + selectedNodeIndex + ": " + doctor.fio + ": " + doctor.category, 44, height - 50 , Color.White );
-				sb.End();
-                Console.WriteLine(); //вывод имен файлов
-				
+                selectedDoctor = doctorToPatients.Keys.First(x => x.id == selectedNodeIndex );
 				pSys.Select(selectedNodeIndex);
 				//вывод в панель пациентов и врача
 				rightPanel.Children.ElementAt( 0 ).Text = "Id # " + selectedNodeIndex;
@@ -370,9 +362,12 @@ namespace GraphVis
 			}
 			else
 			{
+
 				//ds.Add(Color.Orange, "No selection");
 				//pSys.Deselect();
 			}
+            if(selectedDoctor!=null)
+                printInfoDoctor(selectedDoctor);
 		}
 
 	    public void drawPatientsPath(Patient patient, bool reDraw = true)
@@ -390,6 +385,18 @@ namespace GraphVis
             var graphSys = GetService<GraphSystem>();
             graphSys.SelectPath(listVisit.Select(visit => visit.id).ToList());
         }
+
+	    public void printInfoDoctor(Doctor doctor)
+	    {
+            String info = doctor.fio + ": " + doctor.category;
+            int x = GraphicsDevice.DisplayBounds.Width*50/100 - info.Length*5;
+            int y = GraphicsDevice.DisplayBounds.Height*5/100;
+	        
+            var sb = GetService<SpriteBatch>();
+            sb.Begin();
+            labelFontNormal.DrawString(sb, info, x, y, Color.White);
+            sb.End();
+	    }
 
 	}
 }
