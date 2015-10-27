@@ -164,13 +164,18 @@ namespace GraphVis.Helpers
             var height = 10;
             var maxVisits = visitByDate.Max(visits => visits.Count());
             float horizStep = (game.GraphicsDevice.DisplayBounds.Width - 400) / (patient.visitList.Count() + visitByDate.Count() - 1);
-
+			int step = 5;
 
             // радиусы шаров
             var radiusMin = 15;
             var radiusMax = 75;
 
-            var x = 200;
+			float trueWidth = 0;
+			foreach (var visit in visitByDate)
+            {
+                trueWidth +=  (((float)visit.Count()) / maxVisits) * (radiusMax - radiusMin) + radiusMin + step + 1;
+			}
+            int x = (int)  (game.GraphicsDevice.DisplayBounds.Width  - trueWidth ) / 2;
             int y = game.GraphicsDevice.DisplayBounds.Height * 95 / 100;
 
             int yNext = game.GraphicsDevice.DisplayBounds.Height * 85 / 100;
@@ -179,8 +184,9 @@ namespace GraphVis.Helpers
             foreach (var visit in visitByDate)
             {
                 var radius = (((float)visit.Count()) / maxVisits) * (radiusMax - radiusMin) + radiusMin;
+				Console.WriteLine(x);
 
-                listVisitButton.Add(HelperFrame.AddButton(panel, font, x, y, width, height, visit.Key.ToString(), FrameAnchor.Top | FrameAnchor.Left, () => { }, Color.Zero));
+                listVisitButton.Add(HelperFrame.AddButton(panel, font, x, y, (int)radius, height, visit.Key.ToString(), FrameAnchor.Top | FrameAnchor.Left, () => { }, Color.Zero));
                 var button = HelperFrame.AddMapButton(panel, font, x, yNext + (radiusMax - (int)radius) / 2, (int)radius, (int)radius, "node",
                     visit.Count().ToString(), () => { });
 
@@ -188,7 +194,7 @@ namespace GraphVis.Helpers
                 button.MouseOut += (s, e) => actionForPatient(patient, false);
 
                 listVisitButton.Add(button);
-                x += (int)radius + 2;
+                x += (int)radius + step;
             }
         }
     }
