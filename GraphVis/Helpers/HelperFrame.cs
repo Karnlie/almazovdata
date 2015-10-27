@@ -193,6 +193,7 @@ namespace GraphVis.Helpers
                     maxVisits = visitByMonth.Max(visits => visits.Count());
                 }
             }
+			int step = 5;
 
             width = (game.GraphicsDevice.DisplayBounds.Width - 400) / countVisitByDate;
             horizStep = (game.GraphicsDevice.DisplayBounds.Width - 400) / (patient.visitList.Count() + (float)countVisitByDate - 1);
@@ -233,6 +234,7 @@ namespace GraphVis.Helpers
 
             button.MouseIn += (s, e) => actionForVisit(visits);
             button.MouseOut += (s, e) => actionForPatient(patient, false);
+				Console.WriteLine(x);
 
             listVisitButton.Add(button);
             x += (int)radius + 2;

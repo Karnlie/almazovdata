@@ -61,7 +61,7 @@ namespace GraphVis
 			//		AddService(new OrbitCamera(this), true, false, 9996, 9996 );
 			AddService(new GreatCircleCamera(this), true, false, 9995, 9995);
 			AddService(new GraphSystem(this), true, true, 9994, 9994);
-			AddService( new UserInterface( this, @"headerFont" ), true, true, 10000, 10000 );
+			AddService( new UserInterface( this, @"alsBold" ), true, true, 10000, 10000 );
 
 			
 
@@ -74,7 +74,7 @@ namespace GraphVis
 			Exiting += Game_Exiting;
 		}
 
-
+		int latestWidth;
 		/// <summary>
 		/// Initializes game :
 		/// </summary>
@@ -83,13 +83,14 @@ namespace GraphVis
 			//	initialize services :
 			base.Initialize();
 			font1 = Content.Load<SpriteFont>("headerFont");
-            labelFontNormal = Content.Load<SpriteFont>("labelFontNormal");
+            labelFontNormal = Content.Load<SpriteFont>("alsNormal");
 			var cam = GetService<Camera>();
 			cam.Config.FreeCamEnabled = false;
 			selectedNodeIndex = 0;
 			selectedNodePos = new Vector3();
 			isSelected = false;
 			time = 0;
+			latestWidth = GraphicsDevice.DisplayBounds.Width;
 
 			//add gui interface
 			var ui = GetService<UserInterface>();
@@ -101,7 +102,17 @@ namespace GraphVis
 				rightPanel.Height = GraphicsDevice.DisplayBounds.Height;
                 rightPanel.Width = GraphicsDevice.DisplayBounds.Width;
 				foreach (var child in listPatientsButton){
-					child.X = rightPanel.Width - 200;
+					child.X = rightPanel.Width - 150;
+				}
+				//g
+				for (int i = 0; i < listVisitButton.Count ; i += 2){
+					listVisitButton.ElementAt(i).Y = GraphicsDevice.DisplayBounds.Height * 95 / 100;
+					listVisitButton.ElementAt(i + 1).Y  = GraphicsDevice.DisplayBounds.Height * 85 / 100;
+
+					//var newCoord = (int) GraphicsDevice.DisplayBounds.Width / 2 - ( (int) latestWidth / 2 - listVisitButton.ElementAt(i).X + 1 ) + 1;
+					////listVisitButton.ElementAt(i).X = newCoord;
+					////listVisitButton.ElementAt(i + 1).X = newCoord;
+					//latestWidth = GraphicsDevice.DisplayBounds.Width;
 				}
             };
 
@@ -146,7 +157,6 @@ namespace GraphVis
 						y += child.Height + 10;
 					}
 				}
-				Console.WriteLine(e.WheelDelta);
 			} else {
 				var cam = GetService<GreatCircleCamera>();
 				cam.DollyZoom(e.WheelDelta / 60.0f);
