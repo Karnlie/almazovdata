@@ -186,22 +186,15 @@ namespace GraphVis
 				    }
                     list.Sort((one, two) => one.Date.CompareTo(two.Date));
 
-                    for (int i = 0; i < list.Count - 1; i++)
+                    for (int i = 0; i < list.Count; i++)
                     {
                         if (i < list.Count - 2)
-                        {
+                       {
                             if (list[i].Id != list[i + 1].Id) graphEdges.Add(list[i].Id, list[i + 1].Id);
-                        }
+                       }
                     }    
 
                     patData.Add(pid, list);
-                    
-                    //foreach (List[i].Id in patData)
-                   
-                    {       
-                     //   patData[pid][i].Id
-                        //int array = new int
-                    }
                 
                     
 			    }
