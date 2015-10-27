@@ -353,7 +353,6 @@ namespace GraphVis
                 Console.WriteLine(); //вывод имен файлов
 				
 				pSys.Select(selectedNodeIndex);
-
 				//вывод в панель пациентов и врача
 				rightPanel.Children.ElementAt( 0 ).Text = "Id # " + selectedNodeIndex;
 
@@ -367,20 +366,10 @@ namespace GraphVis
 
 	    public void drawPatientsPath(Patient patient, bool reDraw = true)
 	    {
-	        if (!reDraw)
-	        {
-	            drawVisitsPath(patient.visitList.ToArray());
-	        }
-	        else
-	        {
-                while (listVisitButton.Count > 0)
-                {
-                    rightPanel.Remove(listVisitButton[0]);
-                    listVisitButton.RemoveAt(0);
-                }
-                drawVisitsPath(patient.visitList.ToArray());
+            drawVisitsPath(patient.visitList.ToArray());
+	        if (reDraw)
+	        {   
                 HelperFrame.drawBottomPanel(rightPanel, patient, labelFontNormal, listVisitButton, drawVisitsPath, drawPatientsPath);
-                
 	        }
             
 	    }
