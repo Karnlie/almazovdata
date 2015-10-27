@@ -125,7 +125,7 @@ namespace GraphVis.Helpers
             };
 
             int buttonHeight = frame.Font.LineHeight;
-            int buttonWidth = 200;
+            int buttonWidth = 150;
 
             Frame doctor = new Frame(game, frame.Width - buttonWidth, 0, buttonWidth, buttonHeight, "", Color.Zero)
             {
@@ -145,7 +145,7 @@ namespace GraphVis.Helpers
                     buttonHeight,
                     "List of Patients",
                     FrameAnchor.Top | FrameAnchor.Left,
-                    () => { }, Color.Zero)
+                    null, Color.Zero)
                 );
             return frame;
         }
