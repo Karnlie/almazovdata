@@ -24,6 +24,7 @@ namespace GraphVis
 
         List<Frame> listPatientsButton = new List<Frame>();
         List<Frame> listVisitButton = new List<Frame>();
+        List<Frame> listSubVisitButton = new List<Frame>();
         Dictionary<int, int> nodeId_NodeNumber = new Dictionary<int, int>();
 
 		SpriteFont font1;
@@ -102,7 +103,7 @@ namespace GraphVis
 				rightPanel.Height = GraphicsDevice.DisplayBounds.Height;
                 rightPanel.Width = GraphicsDevice.DisplayBounds.Width;
 				foreach (var child in listPatientsButton){
-					child.X = rightPanel.Width - 150;
+					child.X = rightPanel.Width - 200;
 				}
 				//g
 				for (int i = 0; i < listVisitButton.Count ; i += 2){
