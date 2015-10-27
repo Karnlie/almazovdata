@@ -297,7 +297,7 @@ namespace GraphVis.Helpers
                 case groupType.WEEK:
                     foreach (var visit in visitByWeek)
                     {
-                        addButtonToFrame(panel, font, patient, visit.Value.ToArray(), listVisitButton, visit.Key.ToString(), actionForVisit, actionForPatient);
+                        addButtonToFrame(panel, font, patient, visit.Value.ToArray(), listVisitButton, visit.Key.ToString(), actionForVisit, actionForPatient, offset + radiusMax + 5);
                     }
                     break;
 				//case groupType.MONTH:
