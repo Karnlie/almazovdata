@@ -460,7 +460,7 @@ namespace GraphVis
 		void CreatePatientList(HashSet<Patient> list) {
 
 			int buttonHeight    = rightPanel.Font.LineHeight;	
-			int buttonWidth		= 200;	
+			int buttonWidth		= 150;	
 			//int size = rightPanel.Children.Count();
 //		    foreach (var patientButton in listPatientsButton)
 //		    {
@@ -484,25 +484,27 @@ namespace GraphVis
 			        0,
 			        buttonWidth,
 			        buttonHeight, s,
-			        FrameAnchor.Top | FrameAnchor.Left,
+			        FrameAnchor.Top | FrameAnchor.Right,
 			        () => { drawPatientsPath(l); },
 			        Color.Zero)
 			    );
 			}
 			verticalOffset = 0;
-			int y = verticalOffset + 5;
+			int y = verticalOffset + 2;
 			foreach (var child in listPatientsButton){
 				child.Y = y;
-				y += child.Height + 10;
+				y += child.Height + 4;
 			}
 
 		}
+
+
 
 		Frame AddButton(Frame parent, int x, int y, int w, int h, string text, FrameAnchor anchor, Action action, Color bcol, bool visibility = true) {
 			var button = new Frame( this, x, y, w, h, text, Color.White ) {
 				Anchor = anchor,
 				TextAlignment = Alignment.MiddleCenter,
-				PaddingLeft = 25,
+				PaddingLeft = 0,
                 Font = labelFontNormal,
 				Visible = visibility,
 			};
@@ -527,6 +529,8 @@ namespace GraphVis
 		    return button;
 		}
 
+
+
         Frame AddMapButton(Frame parent, int x, int y, int w, int h, string img, string text, Action action)
         {
             var button = new Frame(this, x, y, w, h, text, Color.Zero)
@@ -535,7 +539,6 @@ namespace GraphVis
                 ImageColor = Color.Orange,
                 ImageMode = FrameImageMode.Stretched,
                 Font = labelFontNormal,
-              //  Font = Game.GetService<Dashboard>().plotLightFont,
                 ImageOffsetX = 45,
                 //ImageOffsetY = -20,
                 TextAlignment = Alignment.MiddleCenter,
@@ -588,25 +591,35 @@ namespace GraphVis
                     visitByDate = patient.visitList.GroupBy(visit => visit.date.ToString("dd MMM"));
                     countVisitByDate = visitByDate.Count();
                 }
-                var width = (GraphicsDevice.DisplayBounds.Width - 200) / countVisitByDate;
+                var width = (GraphicsDevice.DisplayBounds.Width - 400) / countVisitByDate;
                 var height = 10;
                 var maxVisits = visitByDate.Max(visits => visits.Count());
+                float horizStep = (GraphicsDevice.DisplayBounds.Width - 400) / (patient.visitList.Count() + visitByDate.Count() - 1);
+
+
+                // радиусы шаров
                 var radiusMin = 15;
-                var radiusMax = 100;
-                var x = 0;
+                var radiusMax = 75;
+                
+                var x = 200;
                 int y = GraphicsDevice.DisplayBounds.Height * 95 / 100;
+                
                 int yNext = GraphicsDevice.DisplayBounds.Height * 85 / 100;
 
+                // сборка нижней панели
                 foreach (var visit in visitByDate)
                 {
                     var radius = (((float)visit.Count()) / maxVisits) * (radiusMax - radiusMin) + radiusMin;
+                    
                     listVisitButton.Add(AddButton(rightPanel, x, y, width, height, visit.Key.ToString(), FrameAnchor.Top | FrameAnchor.Left, () => { }, Color.Zero));
-                    var button = AddMapButton(rightPanel, x, yNext, (int)radius, (int)radius, "node",
+                    var button = AddMapButton(rightPanel, x, yNext + (radiusMax - (int)radius)/2, (int)radius, (int)radius, "node",
                         visit.Count().ToString(), () => { });
+                    
                     button.MouseIn += (s, e) => drawPatientsPathDay(visit.ToArray());
                     button.MouseOut += (s, e) => drawPatientsPath(patient, false);
+                    
                     listVisitButton.Add(button);
-                    x += width;
+                    x += (int)radius + 2;
                 }
 	        }
             
