@@ -316,14 +316,14 @@ namespace GraphVis
 
 			}
 
-			ds.Add(Color.Orange, "FPS {0}", gameTime.Fps);
-			ds.Add(Color.Orange, "F1   - show developer console");
-			ds.Add(Color.Orange, "F5   - build content and reload textures");
-			ds.Add(Color.Orange, "F12  - make screenshot");
-			ds.Add(Color.Orange, "ESC  - exit");
-			ds.Add(Color.Orange, "Press Z or X to load graph");
-			ds.Add(Color.Orange, "Press M to load painted graph (SLOW!)");
-			ds.Add(Color.Orange, "Press P to pause/unpause");
+			//ds.Add(Color.Orange, "FPS {0}", gameTime.Fps);
+			//ds.Add(Color.Orange, "F1   - show developer console");
+			//ds.Add(Color.Orange, "F5   - build content and reload textures");
+			//ds.Add(Color.Orange, "F12  - make screenshot");
+			//ds.Add(Color.Orange, "ESC  - exit");
+			//ds.Add(Color.Orange, "Press Z or X to load graph");
+			//ds.Add(Color.Orange, "Press M to load painted graph (SLOW!)");
+			//ds.Add(Color.Orange, "Press P to pause/unpause");
 
 			//			ds.Add(Color.Orange, "Press I to switch to manual mode");
 
@@ -356,7 +356,7 @@ namespace GraphVis
 			if (isSelected)
 			{
                 Doctor doctor = doctorToPatients.Keys.First(x => x.id == selectedNodeIndex );
-				ds.Add(Color.Orange, "Selected node # " + selectedNodeIndex);
+				//ds.Add(Color.Orange, "Selected node # " + selectedNodeIndex);
 				String info = "";
 				sb.Begin();
 				font1.DrawString( sb, "Id # " + selectedNodeIndex + ": " + doctor.fio + ": " + doctor.category, 44, height - 50 , Color.White );
@@ -370,7 +370,7 @@ namespace GraphVis
 			}
 			else
 			{
-				ds.Add(Color.Orange, "No selection");
+				//ds.Add(Color.Orange, "No selection");
 				//pSys.Deselect();
 			}
 		}
