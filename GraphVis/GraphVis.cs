@@ -128,24 +128,24 @@ namespace GraphVis
 				
 		void inputDevice_MouseScroll(object sender, Fusion.Input.InputDevice.MouseScrollEventArgs e)
 		{
-			if (rightPanel.GetBorderedRectangle().Contains(InputDevice.MousePosition) && e.WheelDelta != 0){
-				//int maxwheel = rightPanel.Children.ElementAt(rightPanel.Children.Count() - 1).Y + rightPanel.Font.LineHeight;
-				//float bottom_boundary = maxwheel - rightPanel.Height;
-				//float top_boundary    = rightPanel.Y - rightPanel.Children.ElementAt(0).Y;
-				//if ( bottom_boundary >= 0 && e.WheelDelta < 0) rightPanel.ForEachChildren( x => x.Y += e.WheelDelta);
-				//if ( top_boundary >= 0 && e.WheelDelta > 0) 
-				
-				verticalOffset += e.WheelDelta;
+			Rectangle patientButtonArea = new Rectangle( GraphicsDevice.DisplayBounds.Width - 200, 0, 200, GraphicsDevice.DisplayBounds.Height );
+			if ( patientButtonArea.Contains( InputDevice.MousePosition )  && e.WheelDelta != 0 ) {
+				int maxwheel = listPatientsButton.ElementAt(listPatientsButton.Count() - 1).Y + rightPanel.Font.LineHeight;
+				float bottom_boundary = maxwheel - rightPanel.Height;
 
-				int y = verticalOffset + 5;
+				if ( (listPatientsButton.ElementAt( 0 ).Y < 0 && e.WheelDelta > 0) || (bottom_boundary >= 0 && e.WheelDelta < 0) ) {
 
-				foreach (var child in listPatientsButton){
-					child.Y = y;
+					verticalOffset += e.WheelDelta;
 
-					y += child.Height + 10;
+					int y = verticalOffset + 5;
+
+					foreach ( var child in listPatientsButton ) {
+						child.Y = y;
+
+						y += child.Height + 10;
+					}
 				}
-				//rightPanel.ForEachChildren( x => x.Y =);
-				//Console.WriteLine(e.WheelDelta);
+				Console.WriteLine(e.WheelDelta);
 			} else {
 				var cam = GetService<GreatCircleCamera>();
 				cam.DollyZoom(e.WheelDelta / 60.0f);
@@ -433,9 +433,10 @@ namespace GraphVis
 			int buttonHeight    = rightPanel.Font.LineHeight;
 			int buttonWidth     = 200;
 
-			Frame doctor = new Frame( this, rightPanel.Width - buttonWidth, 0, rightPanel.Width, buttonHeight, "", Color.Zero ) {
+			Frame doctor = new Frame( this, rightPanel.Width - buttonWidth, 0, buttonWidth, buttonHeight, "", Color.Zero ) {
 				//Anchor = FrameAnchor.Top | FrameAnchor.Right,
 				//PaddingLeft = 25,
+				TextAlignment = Alignment.MiddleCenter,
 			};
 		    listPatientsButton.Add(doctor);
             
@@ -511,7 +512,7 @@ namespace GraphVis
 				button.Click += (s, e) =>
 				{
 					action();
-					if (bcol != testcol) {bcol = (bcol == Color.Zero) ? (new Color(62, 106, 181, 255)) : (Color.Zero);}
+					//if (bcol != testcol) {bcol = (bcol == Color.Zero) ? (new Color(62, 106, 181, 255)) : (Color.Zero);}					
 				};
 			}
 			
