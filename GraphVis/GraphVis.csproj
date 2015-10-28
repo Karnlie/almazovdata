@@ -58,7 +58,9 @@
     <Compile Include="GreatCircleCamera.cs" />
     <Compile Include="CalculationSystem.cs" />
     <Compile Include="CalculationSystemWolfram.cs" />
+    <Compile Include="Helpers\HelperDate.cs" />
     <Compile Include="Helpers\HelperFrame.cs" />
+    <Compile Include="Helpers\HelperFrameNew.cs" />
     <Compile Include="Helpers\ReaderFiles.cs" />
     <Compile Include="LayoutSystem.cs" />
     <Compile Include="CitationGraph.cs" />

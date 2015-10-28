@@ -33,13 +33,12 @@ namespace GraphVis
 		Vector3 selectedNodePos;
 		bool isSelected;
 		Tuple<Point, Point> dragFrame;
-		int time;
 		StanfordNetwork stNet;
 		Frame rightPanel;
 		Dictionary<Doctor, HashSet<Patient>> doctorToPatients;
-
+        HashSet<Patient> patients;
 	    private Doctor selectedDoctor;
-
+	    private Patient selectedPatient;
 
 		/// <summary>
 		/// GraphVis constructor
@@ -49,35 +48,20 @@ namespace GraphVis
 		{
 			//	enable object tracking :
 			Parameters.TrackObjects = true;
-
-			//	uncomment to enable debug graphics device:
-			//	(MS Platform SDK must be installed)
-			//	Parameters.UseDebugDevice	=	true;
-
-			//	add services :
 			AddService(new SpriteBatch(this), false, false, 0, 0);
 			AddService(new DebugStrings(this), true, true, 9999, 9999);
 			AddService(new DebugRender(this), true, true, 9998, 9998);
 
-			//	add here additional services :
 			AddService(new Camera(this), true, false, 9997, 9997);
-			//		AddService(new OrbitCamera(this), true, false, 9996, 9996 );
 			AddService(new GreatCircleCamera(this), true, false, 9995, 9995);
 			AddService(new GraphSystem(this), true, true, 9994, 9994);
 			AddService( new UserInterface( this, @"alsBold" ), true, true, 10000, 10000 );
 
-			
-
-			//	add here additional services :
-
-			//	load configuration for each service :
-			LoadConfiguration();
-
+    		LoadConfiguration();
 			//	make configuration saved on exit :
 			Exiting += Game_Exiting;
 		}
 
-		int latestWidth;
 		/// <summary>
 		/// Initializes game :
 		/// </summary>
@@ -92,37 +76,27 @@ namespace GraphVis
 			selectedNodeIndex = 0;
 			selectedNodePos = new Vector3();
 			isSelected = false;
-			time = 0;
-			latestWidth = GraphicsDevice.DisplayBounds.Width;
-
+            HelperFrameNew.initHelper(this);
 			//add gui interface
 			var ui = GetService<UserInterface>();
-            rightPanel = HelperFrame.CreatePanel(this, listPatientsButton, labelFontNormal);
+            rightPanel = HelperFrameNew.CreatePanel(this, listPatientsButton, labelFontNormal);
             ui.RootFrame = rightPanel;
 			ui.SettleControls();
 			GraphicsDevice.DisplayBoundsChanged += (s, e) =>
 			{
-				rightPanel.Height = GraphicsDevice.DisplayBounds.Height;
-                rightPanel.Width = GraphicsDevice.DisplayBounds.Width;
-				foreach (var child in listPatientsButton){
-					child.X = rightPanel.Width - 200;
-				}
-				//g
-				for (int i = 0; i < listVisitButton.Count-1 ; i += 2){
-					listVisitButton.ElementAt(i).Y = GraphicsDevice.DisplayBounds.Height * 95 / 100;
-					listVisitButton.ElementAt(i + 1).Y  = GraphicsDevice.DisplayBounds.Height * 85 / 100;
+                HelperFrameNew.resizePanel(rightPanel);
+//                if (selectedPatient != null)
+//                {
+//                    drawPatientsPath(selectedPatient);
+//                }
+//				for (int i = 0; i < listVisitButton.Count-1 ; i += 2){
+//					listVisitButton.ElementAt(i).Y = GraphicsDevice.DisplayBounds.Height * 95 / 100;
+//					listVisitButton.ElementAt(i + 1).Y  = GraphicsDevice.DisplayBounds.Height * 85 / 100;
+//				}
+			};
 
-					//var newCoord = (int) GraphicsDevice.DisplayBounds.Width / 2 - ( (int) latestWidth / 2 - listVisitButton.ElementAt(i).X + 1 ) + 1;
-					////listVisitButton.ElementAt(i).X = newCoord;
-					////listVisitButton.ElementAt(i + 1).X = newCoord;
-					//latestWidth = GraphicsDevice.DisplayBounds.Width;
-				}
-            };
-
-			//	add keyboard handler :
 			InputDevice.KeyDown += InputDevice_KeyDown;
 			InputDevice.MouseScroll += inputDevice_MouseScroll;
-			//	load content & create graphics and audio resources here:
 		}
 
 
@@ -243,10 +217,11 @@ namespace GraphVis
 					}
 					
 					Doctor doctor = doctorToPatients.Keys.First(x => x.id == selectedNodeIndex );
-					HashSet<Patient> patients;
+					
 					doctorToPatients.TryGetValue( doctor, out patients);
 //                    CreatePatientList(Frame panel, SpriteFont font, HashSet<Patient> patients, List<Frame>listPatientsButton, Action<Patient> action)
-                    HelperFrame.CreatePatientList(rightPanel, labelFontNormal, patients, listPatientsButton, drawPatientsPath);
+                   //rightPanel = HelperFrame.CreatePanel(this, listPatientsButton, labelFontNormal);
+                    HelperFrameNew.CreatePatientList(rightPanel, labelFontNormal, patients, listPatientsButton, drawPatientsPath);
 				}
 				else
 				{
@@ -368,7 +343,7 @@ namespace GraphVis
             if(selectedDoctor!=null)
                 printInfoDoctor(selectedDoctor.fio + ": " + selectedDoctor.category);
             var offsetY = this.GraphicsDevice.DisplayBounds.Height*95/100;
-		    foreach (var level in HelperFrame.listLevel)
+		    foreach (var level in HelperFrameNew.listLevel)
 		    {
                 printInfo(level.ToString(), (200 - level.ToString().Count() * 5) / 2, offsetY);
 		        offsetY -= 90;
@@ -378,11 +353,12 @@ namespace GraphVis
 
 	    public void drawPatientsPath(Patient patient, bool reDraw = true)
 	    {
+	        selectedPatient = patient;
             drawVisitsPath(patient.visitList.ToArray());
 	        if (reDraw)
 	        {
-                HelperFrame.listLevel.Clear();
-                HelperFrame.drawBottomPanel(rightPanel, patient, labelFontNormal, listVisitButton, drawVisitsPath, drawPatientsPath);
+                HelperFrameNew.listLevel.Clear();
+                HelperFrameNew.drawBottomPanel(rightPanel, patient, labelFontNormal, listVisitButton, drawVisitsPath, drawPatientsPath);
 	        }
             
 	    }

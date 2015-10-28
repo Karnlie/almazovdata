@@ -16,7 +16,12 @@ namespace GraphVis.Helpers
 {
     class HelperFrame
     {
-        
+        public static int widthDisplay = 0;
+        public static int heightDisplay = 0;
+
+
+
+
 		static Func<DateTime, int> weekProjector =
             d => CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(
                     d,
@@ -125,7 +130,6 @@ namespace GraphVis.Helpers
 
         public static void CreatePatientList(Frame panel, SpriteFont font, HashSet<Patient> patients, List<Frame>listPatientsButton, Action<Patient, bool> action)
         {
-
             int buttonHeight = panel.Font.LineHeight;
             int buttonWidth = 150;
 
@@ -153,7 +157,7 @@ namespace GraphVis.Helpers
             foreach (var child in listPatientsButton)
             {
                 child.Y = y;
-                y += child.Height + 4;
+                y += child.Height + 10;
             }
 
         }
@@ -181,7 +185,7 @@ namespace GraphVis.Helpers
         {
             deleteButton(panel, listVisitButton, 0);
             //x = 200;
-			float trueWidth = 0;
+			//float trueWidth = 0;
 			
 
             groupType typeGroup = groupType.DAY;
