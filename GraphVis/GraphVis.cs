@@ -108,7 +108,7 @@ namespace GraphVis
 					child.X = rightPanel.Width - 200;
 				}
 				//g
-				for (int i = 0; i < listVisitButton.Count ; i += 2){
+				for (int i = 0; i < listVisitButton.Count-1 ; i += 2){
 					listVisitButton.ElementAt(i).Y = GraphicsDevice.DisplayBounds.Height * 95 / 100;
 					listVisitButton.ElementAt(i + 1).Y  = GraphicsDevice.DisplayBounds.Height * 85 / 100;
 
@@ -358,7 +358,6 @@ namespace GraphVis
 				pSys.Select(selectedNodeIndex);
 				//вывод в панель пациентов и врача
 				rightPanel.Children.ElementAt( 0 ).Text = "Id # " + selectedNodeIndex;
-
 			}
 			else
 			{
@@ -367,14 +366,22 @@ namespace GraphVis
 				//pSys.Deselect();
 			}
             if(selectedDoctor!=null)
-                printInfoDoctor(selectedDoctor);
+                printInfoDoctor(selectedDoctor.fio + ": " + selectedDoctor.category);
+            var offsetY = this.GraphicsDevice.DisplayBounds.Height*95/100;
+		    foreach (var level in HelperFrame.listLevel)
+		    {
+                printInfo(level.ToString(), (200 - level.ToString().Count() * 5) / 2, offsetY);
+		        offsetY -= 90;
+		    }
+           
 		}
 
 	    public void drawPatientsPath(Patient patient, bool reDraw = true)
 	    {
             drawVisitsPath(patient.visitList.ToArray());
 	        if (reDraw)
-	        {   
+	        {
+                HelperFrame.listLevel.Clear();
                 HelperFrame.drawBottomPanel(rightPanel, patient, labelFontNormal, listVisitButton, drawVisitsPath, drawPatientsPath);
 	        }
             
@@ -386,17 +393,21 @@ namespace GraphVis
             graphSys.SelectPath(listVisit.Select(visit => visit.id).ToList());
         }
 
-	    public void printInfoDoctor(Doctor doctor)
+	    public void printInfoDoctor(String doctorInfo)
 	    {
-            String info = doctor.fio + ": " + doctor.category;
-            int x = GraphicsDevice.DisplayBounds.Width*50/100 - info.Length*5;
-            int y = GraphicsDevice.DisplayBounds.Height*5/100;
-	        
+            String info = doctorInfo;
+            int x = GraphicsDevice.DisplayBounds.Width * 50 / 100 - info.Length * 5;
+            int y = GraphicsDevice.DisplayBounds.Height * 5 / 100;
+	        printInfo(info, x, y);
+	    }
+
+        public void printInfo(String info, int offsetX = 0, int offsetY = 0)
+        {
             var sb = GetService<SpriteBatch>();
             sb.Begin();
-            labelFontNormal.DrawString(sb, info, x, y, Color.White);
+            labelFontNormal.DrawString(sb, info, offsetX, offsetY, Color.White);
             sb.End();
-	    }
+        }
 
 	}
 }
