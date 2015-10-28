@@ -158,7 +158,6 @@ namespace GraphVis.Helpers
 
         }
 
-        private const int LIMIT_ELEMENT_ROW = 30;
         private static int width;
         private const int height = 10;
         private static float horizStep;
@@ -171,7 +170,7 @@ namespace GraphVis.Helpers
         private static int yNext;
         private static int maxVisits;
 
-                public enum groupType
+        public enum groupType
         {
             DAY=3,
             WEEK=2,
@@ -182,7 +181,6 @@ namespace GraphVis.Helpers
         {
             deleteButton(panel, listVisitButton, 0);
             //x = 200;
-            newX = 200;
 			float trueWidth = 0;
 			
 
@@ -239,7 +237,6 @@ namespace GraphVis.Helpers
             switch (typeGroup)
             {
 				case groupType.DAY: {
-                       // printInfoLevel(panel, font, typeGroup.ToString(), y);
 						addedButtonsCount = visitByDay.Count * 2; // +1 - info buttom
 
 						foreach ( var visit in visitByDay ) {
@@ -248,7 +245,6 @@ namespace GraphVis.Helpers
 					}
 					break;
 				case groupType.WEEK: {
-                    //printInfoLevel(panel, font, typeGroup.ToString(), y);
                     addedButtonsCount = visitByWeek.Count * 2;	// +1 - info buttom			
 
 						foreach ( var visit in visitByWeek ) {
@@ -257,7 +253,6 @@ namespace GraphVis.Helpers
 					}
 					break;
 				case groupType.MONTH: {
-                    //printInfoLevel(panel, font, typeGroup.ToString(), y);
                     addedButtonsCount = visitByMonth.Count * 2 ;	// +1 - info buttom					
 						foreach ( var visit in visitByMonth ) {
 							addButtonToFrame( panel, font, patient, visit.Value.ToArray(), listVisitButton, visit.Key.ToString(), actionForVisit, actionForPatient, addedButtonsCount );
@@ -334,7 +329,6 @@ namespace GraphVis.Helpers
             {
 				case groupType.DAY:
                 {
-                    //printInfoLevel(panel, font, typeGroup.ToString(), offsetForButton + radiusMax + height + 5);
                     addedButtonsCount += visitByDay.Count * 2;	// +1 - info buttom					
 					foreach ( var visit in visitByDay ) {
                         addButtonToFrame(panel, font, patient, visit.Value.ToArray(), listVisitButton, visit.Key.ToString(), actionForVisit, actionForPatient, addedButtonsCount, offsetForButton, false);
@@ -343,24 +337,14 @@ namespace GraphVis.Helpers
 				break;
 				case groupType.WEEK: 
                 {
-                    //printInfoLevel(panel, font, typeGroup.ToString(), offsetForButton + radiusMax + height + 5);
                     addedButtonsCount += visitByWeek.Count * 2;	// +1 - info buttom		
 					foreach ( var visit in visitByWeek ) {
                         addButtonToFrame(panel, font, patient, visit.Value.ToArray(), listVisitButton, visit.Key.ToString(), actionForVisit, actionForPatient, addedButtonsCount, offsetForButton);
 					}
 				}
 				break;
-				//case groupType.MONTH:
-				//	foreach (var visit in visitByMonth)
-				//	{
-				//		addButtonToFrame(panel, font, patient, visit.Value.ToArray(), listVisitButton, visit.Key.ToString(), actionForVisit, actionForPatient);
-				//	}
-				//	break;
             }
         }
-
-        private static int newX = 200;
-        
 
         private static void addButtonToFrame(Frame panel, SpriteFont font, Patient patient, Visit[] visits, List<Frame> listVisitButton, String text, Action<Visit[]> actionForVisit, Action<Patient, bool> actionForPatient, int  visitsButtonCount, int offsetVertical = 0, bool addActionOnClick = true)
         {
@@ -381,24 +365,6 @@ namespace GraphVis.Helpers
 
             listVisitButton.Add(button);
             x += radiusMax;
-//            int newY = panel.Game.GraphicsDevice.DisplayBounds.Height * 95 / 100;
-//            var radius = ((float)visits.Length / maxVisits) * (radiusMax - radiusMin) + radiusMin;
-//            var offset = (width - (int)radius) / 2;
-//            listVisitButton.Add(HelperFrame.AddButton(panel, font, newX, newY, width, height, text, FrameAnchor.Top | FrameAnchor.Left, () => { }, Color.Zero));
-//            var button = HelperFrame.AddMapButton(panel, font, newX + offset, newY - (radiusMax + (int)radius) / 2, (int)radius, (int)radius, "node",
-//              visits.Length.ToString(), () => { });
-//
-//			//var
-//
-//            button.MouseIn += (s, e) => actionForVisit(visits);
-//            button.MouseOut += (s, e) => actionForPatient(patient, false);
-//            button.Click += (s, e) => {
-//				if(addActionOnClick) drawTopBottomPanel(panel, patient, visits.ToList(), font, listVisitButton, actionForVisit, actionForPatient, offsetVertical + radiusMax + height, visitsButtonCount); 
-//			};
-//				//Console.WriteLine(x);
-//
-//            listVisitButton.Add(button);
-//            newX += radiusMax;
 
         }
 
@@ -432,15 +398,5 @@ namespace GraphVis.Helpers
                 listPatientsButton.RemoveAt(stayElements);
             }
         }
-//        public static void printInfoLevel(Frame panel, SpriteFont font, String text, int offset)
-//        {
-//            int x = 100 - text.Length * 5;
-//            int y = offset;
-//            AddButton(panel, font, x, y, 5, 2, text, FrameAnchor.All, () => { }, Color.Zero);
-////            var sb = game.GetService<SpriteBatch>();
-////            sb.Begin();
-////            font.DrawString(sb, text, x, y, Color.White);
-////            sb.End();
-//        }
     }
 }
