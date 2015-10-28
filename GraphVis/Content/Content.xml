@@ -357,4 +357,23 @@
     <Compression>RGB</Compression>
     <SourceFile>Temp\7340F4D155CDD85C7555DCEA6F11C8AF_0.tga</SourceFile>
   </Asset>
+  <Asset xsi:type="BMFontSpriteFontAsset">
+    <AssetPath>alsCircles.bmfc</AssetPath>
+    <BuildOrder>0</BuildOrder>
+    <IgnoreToolChanges>false</IgnoreToolChanges>
+    <SourcePath>alsCircles.bmfc</SourcePath>
+  </Asset>
+  <Asset xsi:type="ImageFileTextureAsset">
+    <AssetPath>alsCircles.bmfc\Page#0</AssetPath>
+    <BuildOrder>1</BuildOrder>
+    <IgnoreToolChanges>false</IgnoreToolChanges>
+    <NoMips>false</NoMips>
+    <Fast>false</Fast>
+    <ToNormal>false</ToNormal>
+    <Color>true</Color>
+    <Alpha>false</Alpha>
+    <Normal>false</Normal>
+    <Compression>RGB</Compression>
+    <SourceFile>Temp\BCDA332852E4B0B2484191008B293555_0.tga</SourceFile>
+  </Asset>
 </ArrayOfAsset>
