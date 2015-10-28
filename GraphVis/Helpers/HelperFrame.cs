@@ -335,7 +335,7 @@ namespace GraphVis.Helpers
 				case groupType.DAY:
                 {
                     //printInfoLevel(panel, font, typeGroup.ToString(), offsetForButton + radiusMax + height + 5);
-                    addedButtonsCount += visitByDay.Count * 2 + 1;	// +1 - info buttom					
+                    addedButtonsCount += visitByDay.Count * 2;	// +1 - info buttom					
 					foreach ( var visit in visitByDay ) {
                         addButtonToFrame(panel, font, patient, visit.Value.ToArray(), listVisitButton, visit.Key.ToString(), actionForVisit, actionForPatient, addedButtonsCount, offsetForButton, false);
 					}
@@ -344,7 +344,7 @@ namespace GraphVis.Helpers
 				case groupType.WEEK: 
                 {
                     //printInfoLevel(panel, font, typeGroup.ToString(), offsetForButton + radiusMax + height + 5);
-                    addedButtonsCount += visitByWeek.Count * 2 + 1;	// +1 - info buttom		
+                    addedButtonsCount += visitByWeek.Count * 2;	// +1 - info buttom		
 					foreach ( var visit in visitByWeek ) {
                         addButtonToFrame(panel, font, patient, visit.Value.ToArray(), listVisitButton, visit.Key.ToString(), actionForVisit, actionForPatient, addedButtonsCount, offsetForButton);
 					}
