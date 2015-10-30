@@ -31,7 +31,7 @@ namespace GraphVis.Models.Frames
                                 ConstantFrame.RIGHT_PANEL_WIDTH,
                                 h,
                                 "",
-                                new Color(25, 71, 138, 255)
+                                ConstantFrame.COLOR_RIGHT_FRAME
                                 );
             bottomFrameList = new List<BottomFrame>();
             this.Add(rightFrame);
@@ -45,11 +45,11 @@ namespace GraphVis.Models.Frames
 
         public void resizePanel()
         {
-            base.resizePanel();
             foreach (BasicFrame child in this.Children)
             {
                 child.resizePanel();
             }
+            base.resizePanel();
         }
 
         public void clearBottomFrames()
@@ -90,7 +90,7 @@ namespace GraphVis.Models.Frames
                 // width
                 ConstantFrame.BOTTOM_PANEL_HEIGHT, //height
                 "",
-                new Color(25, 71, 138, 255),
+                ConstantFrame.COLOR_BOTTOM_FRAME,
                 bottomFrameList.Count
                 );
             return bottomFrame;

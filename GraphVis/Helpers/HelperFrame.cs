@@ -73,81 +73,6 @@ namespace GraphVis.Helpers
             return button;
         }
 
-//        public static void drawBottomPanel(Frame panel, Patient patient, SpriteFont font, List<Frame> listVisitButton, Action<Visit[]> actionForVisit, Action<Patient, bool> actionForPatient)
-//        {
-//            deleteButton(panel, listVisitButton, 0);
-//            MainFrame.GroupType typeGroup = MainFrame.GroupType.DAY;
-//            var game = panel.Game;
-//
-//            Dictionary<string, List<Visit>> visitByDate = HelperDate.getVisitsByDate(patient, "dd MMM");
-//            if (!isBlend(visitByDate.Count()))
-//            {
-//                typeGroup = MainFrame.GroupType.WEEK;
-//                visitByDate = HelperDate.getVisitsByWeek(patient);
-//                if (!isBlend(visitByDate.Count()))
-//                {
-//                    typeGroup = MainFrame.GroupType.MONTH;
-//                    visitByDate = HelperDate.getVisitsByDate(patient, "MMM yyyy");
-//                }
-//            }
-//            updateLevel(typeGroup);
-//            // сборка нижней панели
-//            addButtonToFrame(panel, font, patient, visitByDate, listVisitButton, actionForVisit, actionForPatient, false);
-//        }
-
-//        private static void addButtonToFrame(Frame panel, SpriteFont font, Patient patient, Dictionary<string, List<Visit>> dateToVisits, List<Frame> listVisitButton, Action<Visit[]> actionForVisit, Action<Patient, bool> actionForPatient, bool addActionOnClick = true)
-//        {
-//            int maxVisits = dateToVisits.Max(x => x.Value.Count);
-//            int elementNumber = 0;
-//            foreach (var dateVisits in dateToVisits)
-//            {
-//                var date = dateVisits.Key;
-//                var visits = dateVisits.Value;
-//                var radius = ((float)visits.Count / maxVisits) * (radiusMax - radiusMin) + radiusMin;
-//                int positionX = PositionXForBottonPanel + radiusMax*elementNumber; // depends of elementNumber 
-//                // TODO: depends of level
-//                int positionY = PositionYForBottonPanel;
-//                listVisitButton.Add(AddButton(panel, font, positionX, positionY, radiusMax, buttonHeightRightPanel, date, FrameAnchor.Top | FrameAnchor.Left, () => { }, Color.Zero));
-//                // add image
-//                var buttonImage = AddMapButton(panel, font, positionX, positionY + (radiusMax - (int)radius) / 2 - radiusMax, (int)radius, (int)radius, "node",
-//                    visits.Count.ToString(), () => { });
-//                buttonImage.MouseIn += (s, e) => actionForVisit(visits.ToArray());
-//                buttonImage.MouseOut += (s, e) => actionForPatient(patient, false);
-//                buttonImage.Click += (s, e) =>
-//                {
-//                    //if (addActionOnClick) drawTopBottomPanel(panel, patient, visits.ToList(), font, listVisitButton, actionForVisit, actionForPatient, offsetVertical + radiusMax + height, visitsButtonCount);
-//                };
-//                listVisitButton.Add(buttonImage);
-//                elementNumber++;
-//            }
-//        }
-//
-//
-//        private static void updateLevel(MainFrame.GroupType typeGroup)
-//        {
-//            if (MainFrame.listLevel.Count > 0)
-//            {
-//                if ((int) MainFrame.listLevel.Last() < (int)typeGroup)
-//                {
-//                    if (MainFrame.listLevel.Count > 2)
-//                    {
-//                        MainFrame.listLevel.RemoveAt(MainFrame.listLevel.Count - 1);
-//                    }
-//                    MainFrame.listLevel.Add(typeGroup);
-//                }
-//
-//            }
-//            else
-//            {
-//                MainFrame.listLevel.Add(typeGroup);
-//            }
-//        }
-//
-//        private static bool isBlend(int countVisitByDate)
-//        {
-//            return widthDisplay > countVisitByDate * radiusMax;
-//        }
-
 
         public static void deleteButton(Frame frame, List<Frame> listButton, int stayElements)
         {
@@ -173,12 +98,7 @@ namespace GraphVis.Helpers
             {
                 if ((int) listLevel.Last() < (int) typeGroup)
                 {
-//                    if (listLevel.Count > 2)
-//                    {
-//                        listLevel.RemoveAt(listLevel.Count - 1);
-//                    }
                     listLevel.Add(typeGroup);
-
                 }
                 else
                 {
@@ -198,26 +118,5 @@ namespace GraphVis.Helpers
         {
             return listLevel.Last() == GroupType.DAY;
         }
-
-
-//        public void fun()
-//        {
-//            if ((int)listLevel.Last() < (int)typeGroup)
-//                listLevel.Add(typeGroup);
-//            else
-//            {
-//                if (((int)listLevel.Last() - (int)typeGroup == 1) && listLevel.Count > 2)
-//                    listLevel.RemoveAt(listLevel.Count - 1);
-//                else
-//                {
-//                    if (((int)listLevel.Last() - (int)typeGroup == 0) && listLevel.Count == 2)
-//                    {
-//                        listLevel.RemoveAt(listLevel.Count - 1);
-//                        listLevel.Add(typeGroup);
-//                    }
-//
-//                }
-//            }
-//        }
     }
 }

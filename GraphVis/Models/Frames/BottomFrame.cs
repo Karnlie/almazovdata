@@ -18,10 +18,6 @@ namespace GraphVis.Models.Frames
         private List<Frame> listVisitButton;
         public int LineHeight;
         // setting for bottom panel
-        private const int radiusMax = 75;
-        private const int radiusMin = 15;
-        public int PositionXForBottonPanel = 0;
-        public int PositionYForBottonPanel = 0;
         private int level = 0;
         private int position = 0;
 
@@ -59,12 +55,13 @@ namespace GraphVis.Models.Frames
             {
                 var date = dateVisits.Key;
                 var visits = dateVisits.Value;
-                var radius = ((float)visits.Count / maxVisits) * (radiusMax - radiusMin) + radiusMin;
-                int positionX = PositionXForBottonPanel + radiusMax*elementNumber; // depends of elementNumber 
+                var radius = ((float)visits.Count / maxVisits) * (ConstantFrame.RADIUS_MAX - ConstantFrame.RADIUS_MIN) + ConstantFrame.RADIUS_MIN;
+                int positionX = ConstantFrame.RADIUS_MAX * elementNumber; // depends of elementNumber 
                 int positionYdate = this.Height - LineHeight;
-                listVisitButton.Add(HelperFrame.AddButton(this, this.Font, positionX, positionYdate, radiusMax, LineHeight, date, FrameAnchor.Top | FrameAnchor.Left, () => { }, Color.Zero));
+                var offset = (ConstantFrame.RADIUS_MAX - (int)radius) / 2;
+                listVisitButton.Add(HelperFrame.AddButton(this, this.Font, positionX, positionYdate, ConstantFrame.RADIUS_MAX, LineHeight, date, FrameAnchor.Top | FrameAnchor.Left, () => { }, Color.Zero));
                 // add image
-                var buttonImage = HelperFrame.AddMapButton(this, this.Font, positionX, positionYdate + (radiusMax - (int)radius) / 2 - radiusMax, (int)radius, (int)radius, "node",
+                var buttonImage = HelperFrame.AddMapButton(this, this.Font, positionX + offset, positionYdate + (ConstantFrame.RADIUS_MAX - (int)radius) / 2 - ConstantFrame.RADIUS_MAX, (int)radius, (int)radius, "node",
                     visits.Count.ToString(), () => { });
                 buttonImage.MouseIn += (s, e) => actionForVisit(visits.ToArray());
                 buttonImage.MouseOut += (s, e) => actionForPatient(patient, false);
@@ -94,7 +91,7 @@ namespace GraphVis.Models.Frames
         
         private bool isBlend(int countVisitByDate)
         {
-            return this.Width > countVisitByDate * radiusMax;
+            return this.Width > countVisitByDate * ConstantFrame.RADIUS_MAX;
         }
 
         public void getFrameVisitFromLevel(List<Visit> listVisit, out HelperFrame.GroupType groupType, out Dictionary<string, List<Visit>> visitByDate)
