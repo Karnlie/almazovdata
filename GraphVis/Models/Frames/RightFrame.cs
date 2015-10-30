@@ -39,7 +39,7 @@ namespace GraphVis.Models
             int positionY = this.Height * 1 / 100;
 
             listPatientsButton.Add(
-                HelperFrameNew.AddButton(
+                HelperFrame.AddButton(
                     this,
                     this.Font,
                     positionX,
@@ -51,7 +51,7 @@ namespace GraphVis.Models
                     () => { }, Color.Zero)
             );
             listPatientsButton.Add(
-                HelperFrameNew.AddButton(
+                HelperFrame.AddButton(
                     this,
                     this.Font,
                 //TODO
@@ -74,13 +74,13 @@ namespace GraphVis.Models
 
         public void fillPatientList(HashSet<Patient> patients, Action<Patient, bool> action)
         {
-            HelperFrameNew.deleteButton(this, listPatientsButton, 2);
+            HelperFrame.deleteButton(this, listPatientsButton, 2);
             
             foreach (var patient in patients)
             {
                 String s = patient.id;
                 listPatientsButton.Add(
-                    HelperFrameNew.AddButton(
+                    HelperFrame.AddButton(
                         this,
                         this.Font,
                         0,

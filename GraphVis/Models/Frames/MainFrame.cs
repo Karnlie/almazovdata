@@ -52,22 +52,6 @@ namespace GraphVis.Models.Frames
             }
         }
 
-        public BottomFrame createBottomFrame(int level=1)
-        {
-            int countBottomFrame = bottomFrameList.Count;
-            BottomFrame bottomFrame = new BottomFrame(this.Game,
-                ConstantFrame.BOTTOM_PANEL_LEFT_BORDER, //x
-                heightDisplay - ConstantFrame.BOTTOM_PANEL_HEIGHT*(countBottomFrame + 1),
-                widthDisplay - ConstantFrame.BOTTOM_PANEL_LEFT_BORDER - ConstantFrame.BOTTOM_PANEL_RIGHT_BORDER,
-                // width
-                ConstantFrame.BOTTOM_PANEL_HEIGHT, //height
-                "",
-                new Color(25, 71, 138, 255),
-                level
-                );
-            return bottomFrame; 
-        }
-
         public void clearBottomFrames()
         {
             foreach (var bottomFrame in bottomFrameList)
@@ -75,7 +59,7 @@ namespace GraphVis.Models.Frames
                 this.Remove(bottomFrame);
             }
             bottomFrameList.Clear();
-            HelperFrameNew.listLevel.Clear();
+            HelperFrame.listLevel.Clear();
         }
 
         public void RemoveBottomFrame(int position)
@@ -85,6 +69,9 @@ namespace GraphVis.Models.Frames
                 var bottomFrame = bottomFrameList.Last();
                 this.Remove(bottomFrame);
                 bottomFrameList.Remove(bottomFrame);
+
+                var level = HelperFrame.listLevel.Last();
+                HelperFrame.listLevel.Remove(level);
             }
         }
 
@@ -92,6 +79,21 @@ namespace GraphVis.Models.Frames
         {
             bottomFrameList.Add(bottomFrame);
             this.Add(bottomFrame);
+        }
+
+        public BottomFrame createBottomFrame()
+        {
+            BottomFrame bottomFrame = new BottomFrame(this.Game,
+                ConstantFrame.BOTTOM_PANEL_LEFT_BORDER, //x
+                heightDisplay - ConstantFrame.BOTTOM_PANEL_HEIGHT * (bottomFrameList.Count + 1),
+                widthDisplay - ConstantFrame.BOTTOM_PANEL_LEFT_BORDER - ConstantFrame.BOTTOM_PANEL_RIGHT_BORDER,
+                // width
+                ConstantFrame.BOTTOM_PANEL_HEIGHT, //height
+                "",
+                new Color(25, 71, 138, 255),
+                bottomFrameList.Count
+                );
+            return bottomFrame;
         }
     }
 }

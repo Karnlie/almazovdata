@@ -335,13 +335,12 @@ namespace GraphVis
                 mainPanel.clearBottomFrames();
 	            var bottomFrame = mainPanel.createBottomFrame();
 
-	            var groupType = HelperFrameNew.GroupType.DAY;
-                Dictionary<string, List<Visit>> visitByDate = new Dictionary<string, List<Visit>>();
-                groupType = bottomFrame.getFrameVisitFromLevel(patient.visitList, groupType, out visitByDate);
-                if(HelperFrameNew.isUpdatedLevel(groupType))
+	            HelperFrame.GroupType groupType;
+	            Dictionary<string, List<Visit>> visitByDate;
+                bottomFrame.getFrameVisitFromLevel(patient.visitList, out groupType, out visitByDate);
+                if(HelperFrame.isUpdatedLevel(groupType))
                 {
                     bottomFrame.setLevel((int) groupType);
-                    bottomFrame.setPosition(1);
                     mainPanel.AddBottomFrame(bottomFrame);
                     bottomFrame.fillVisitData(patient, visitByDate, drawVisitsPath, drawPatientsPath);
 	            }

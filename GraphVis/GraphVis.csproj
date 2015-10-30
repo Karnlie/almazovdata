@@ -60,7 +60,6 @@
     <Compile Include="CalculationSystemWolfram.cs" />
     <Compile Include="Helpers\HelperDate.cs" />
     <Compile Include="Helpers\HelperFrame.cs" />
-    <Compile Include="Helpers\HelperFrameNew.cs" />
     <Compile Include="Models\Frames\BasicFrame.cs" />
     <Compile Include="Models\Frames\BottomFrame.cs" />
     <Compile Include="Models\Frames\ConstantFrame.cs" />
