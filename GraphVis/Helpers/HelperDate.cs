@@ -23,21 +23,21 @@ namespace GraphVis.Helpers
         }
 
 
-        public static Dictionary<string, List<Visit>> getVisitsByDate(Patient patient, String datePattern)
+        public static Dictionary<string, List<Visit>> getVisitsByDate(List<Visit> visits, String datePattern)
         {
-            var visitByDate = patient.visitList.GroupBy(visit => visit.date.ToString(datePattern)).ToDictionary(g => g.Key, g => g.ToList());
+            var visitByDate = visits.GroupBy(visit => visit.date.ToString(datePattern)).ToDictionary(g => g.Key, g => g.ToList());
             return visitByDate;
         }
 
-        public static Dictionary<string, List<Visit>> getVisitsByWeek(Patient patient)
+        public static Dictionary<string, List<Visit>> getVisitsByWeek(List<Visit> visits)
         {
             Func<DateTime, int> weekProjector =
             d => CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(
                     d,
                     CalendarWeekRule.FirstFourDayWeek,
                     DayOfWeek.Sunday);
-            var visits = patient.visitList.GroupBy(p => weekProjector(p.date).ToString()).ToDictionary(g => g.Key, g => g.ToList());
-            return visits;
+            var visitsByDate = visits.GroupBy(p => weekProjector(p.date).ToString()).ToDictionary(g => g.Key, g => g.ToList());
+            return visitsByDate;
         }
 
     }

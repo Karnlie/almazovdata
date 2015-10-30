@@ -61,6 +61,10 @@
     <Compile Include="Helpers\HelperDate.cs" />
     <Compile Include="Helpers\HelperFrame.cs" />
     <Compile Include="Helpers\HelperFrameNew.cs" />
+    <Compile Include="Models\Frames\BasicFrame.cs" />
+    <Compile Include="Models\Frames\BottomFrame.cs" />
+    <Compile Include="Models\Frames\ConstantFrame.cs" />
+    <Compile Include="Models\Frames\MainFrame.cs" />
     <Compile Include="Helpers\ReaderFiles.cs" />
     <Compile Include="LayoutSystem.cs" />
     <Compile Include="CitationGraph.cs" />
@@ -69,6 +73,7 @@
     <Compile Include="INode.cs" />
     <Compile Include="CalculationSystemAuto.cs" />
     <Compile Include="CalculationSystemFixed.cs" />
+    <Compile Include="Models\Frames\RightFrame.cs" />
     <Compile Include="Models\Medicine\Doctor.cs" />
     <Compile Include="Models\Medicine\EdgeDoctor.cs" />
     <Compile Include="Models\Medicine\Patient.cs" />

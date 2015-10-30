@@ -13,6 +13,8 @@ using Fusion.Development;
 using Fusion.UserInterface;
 using GraphVis.HelperFiles;
 using GraphVis.Helpers;
+using GraphVis.Models;
+using GraphVis.Models.Frames;
 using GraphVis.Models.Medicine;
 
 namespace GraphVis
@@ -22,9 +24,6 @@ namespace GraphVis
 		Random rnd = new Random();
 		int selectedNodeIndex;
 
-        List<Frame> listPatientsButton = new List<Frame>();
-        List<Frame> listVisitButton = new List<Frame>();
-        List<Frame> listSubVisitButton = new List<Frame>();
         Dictionary<int, int> nodeId_NodeNumber = new Dictionary<int, int>();
 
 		SpriteFont font1;
@@ -34,7 +33,8 @@ namespace GraphVis
 		bool isSelected;
 		Tuple<Point, Point> dragFrame;
 		StanfordNetwork stNet;
-		Frame rightPanel;
+		MainFrame mainPanel;
+
 		Dictionary<Doctor, HashSet<Patient>> doctorToPatients;
         HashSet<Patient> patients;
 	    private Doctor selectedDoctor;
@@ -76,23 +76,14 @@ namespace GraphVis
 			selectedNodeIndex = 0;
 			selectedNodePos = new Vector3();
 			isSelected = false;
-            HelperFrameNew.initHelper(this);
 			//add gui interface
 			var ui = GetService<UserInterface>();
-            rightPanel = HelperFrameNew.CreatePanel(this, listPatientsButton, labelFontNormal);
-            ui.RootFrame = rightPanel;
+            mainPanel = new MainFrame(this, 0, 0, this.GraphicsDevice.DisplayBounds.Width, this.GraphicsDevice.DisplayBounds.Height, "", new Color(20, 20, 20, 0f));
+            ui.RootFrame = mainPanel;
 			ui.SettleControls();
 			GraphicsDevice.DisplayBoundsChanged += (s, e) =>
 			{
-                HelperFrameNew.resizePanel(rightPanel);
-//                if (selectedPatient != null)
-//                {
-//                    drawPatientsPath(selectedPatient);
-//                }
-//				for (int i = 0; i < listVisitButton.Count-1 ; i += 2){
-//					listVisitButton.ElementAt(i).Y = GraphicsDevice.DisplayBounds.Height * 95 / 100;
-//					listVisitButton.ElementAt(i + 1).Y  = GraphicsDevice.DisplayBounds.Height * 85 / 100;
-//				}
+                mainPanel.resizePanel();
 			};
 
 			InputDevice.KeyDown += InputDevice_KeyDown;
@@ -118,22 +109,9 @@ namespace GraphVis
 		void inputDevice_MouseScroll(object sender, Fusion.Input.InputDevice.MouseScrollEventArgs e)
 		{
 			Rectangle patientButtonArea = new Rectangle( GraphicsDevice.DisplayBounds.Width - 200, 0, 200, GraphicsDevice.DisplayBounds.Height );
-			if ( patientButtonArea.Contains( InputDevice.MousePosition )  && e.WheelDelta != 0 ) {
-				int maxwheel = listPatientsButton.ElementAt(listPatientsButton.Count() - 1).Y + rightPanel.Font.LineHeight;
-				float bottom_boundary = maxwheel - rightPanel.Height;
-
-				if ( (listPatientsButton.ElementAt( 0 ).Y < 0 && e.WheelDelta > 0) || (bottom_boundary >= 0 && e.WheelDelta < 0) ) {
-
-					verticalOffset += e.WheelDelta;
-
-					int y = verticalOffset + 5;
-
-					foreach ( var child in listPatientsButton ) {
-						child.Y = y;
-
-						y += child.Height + 10;
-					}
-				}
+			if ( patientButtonArea.Contains( InputDevice.MousePosition )  && e.WheelDelta != 0 )
+			{
+			    mainPanel.GetRightFrame().updatePanelScroll(verticalOffset, e);
 			} else {
 				var cam = GetService<GreatCircleCamera>();
 				cam.DollyZoom(e.WheelDelta / 60.0f);
@@ -215,13 +193,9 @@ namespace GraphVis
 					{
 						Console.WriteLine(((NodeWithText)stNet.Nodes[selectedNodeIndex]).Text);
 					}
-					
 					Doctor doctor = doctorToPatients.Keys.First(x => x.id == selectedNodeIndex );
-					
 					doctorToPatients.TryGetValue( doctor, out patients);
-//                    CreatePatientList(Frame panel, SpriteFont font, HashSet<Patient> patients, List<Frame>listPatientsButton, Action<Patient> action)
-                   //rightPanel = HelperFrame.CreatePanel(this, listPatientsButton, labelFontNormal);
-                    HelperFrameNew.CreatePatientList(rightPanel, labelFontNormal, patients, listPatientsButton, drawPatientsPath);
+                    mainPanel.GetRightFrame().fillPatientList(patients, drawPatientsPath);
 				}
 				else
 				{
@@ -332,7 +306,7 @@ namespace GraphVis
                 selectedDoctor = doctorToPatients.Keys.First(x => x.id == selectedNodeIndex );
 				pSys.Select(selectedNodeIndex);
 				//вывод в панель пациентов и врача
-				rightPanel.Children.ElementAt( 0 ).Text = "Id # " + selectedNodeIndex;
+				mainPanel.Children.ElementAt( 0 ).Text = "Id # " + selectedNodeIndex;
 			}
 			else
 			{
@@ -343,11 +317,12 @@ namespace GraphVis
             if(selectedDoctor!=null)
                 printInfoDoctor(selectedDoctor.fio + ": " + selectedDoctor.category);
             var offsetY = this.GraphicsDevice.DisplayBounds.Height*95/100;
-		    foreach (var level in HelperFrameNew.listLevel)
-		    {
-                printInfo(level.ToString(), (200 - level.ToString().Count() * 5) / 2, offsetY);
-		        offsetY -= 90;
-		    }
+            // TODO:
+//            foreach (var level in mainPanel.listLevel)
+//		    {
+//                printInfo(level.ToString(), (200 - level.ToString().Count() * 5) / 2, offsetY);
+//		        offsetY -= 90;
+//		    }
            
 		}
 
@@ -357,10 +332,20 @@ namespace GraphVis
             drawVisitsPath(patient.visitList.ToArray());
 	        if (reDraw)
 	        {
-                HelperFrameNew.listLevel.Clear();
-                HelperFrameNew.drawBottomPanel(rightPanel, patient, labelFontNormal, listVisitButton, drawVisitsPath, drawPatientsPath);
-	        }
-            
+                mainPanel.clearBottomFrames();
+	            var bottomFrame = mainPanel.createBottomFrame();
+
+	            var groupType = HelperFrameNew.GroupType.DAY;
+                Dictionary<string, List<Visit>> visitByDate = new Dictionary<string, List<Visit>>();
+                groupType = bottomFrame.getFrameVisitFromLevel(patient.visitList, groupType, out visitByDate);
+                if(HelperFrameNew.isUpdatedLevel(groupType))
+                {
+                    bottomFrame.setLevel((int) groupType);
+                    bottomFrame.setPosition(1);
+                    mainPanel.AddBottomFrame(bottomFrame);
+                    bottomFrame.fillVisitData(patient, visitByDate, drawVisitsPath, drawPatientsPath);
+	            }
+           }
 	    }
 
         public void drawVisitsPath(Visit[] listVisit)
