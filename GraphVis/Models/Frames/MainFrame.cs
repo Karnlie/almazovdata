@@ -33,9 +33,8 @@ namespace GraphVis.Models.Frames
                                 "",
                                 ConstantFrame.COLOR_RIGHT_FRAME
                                 );
-            bottomFrameList = new List<BottomFrame>();
             this.Add(rightFrame);
-//            this.Add(bottomFrame);
+            bottomFrameList = new List<BottomFrame>();
         }
 
         public RightFrame GetRightFrame()
@@ -86,8 +85,7 @@ namespace GraphVis.Models.Frames
             BottomFrame bottomFrame = new BottomFrame(this.Game,
                 ConstantFrame.BOTTOM_PANEL_LEFT_BORDER, //x
                 heightDisplay - ConstantFrame.BOTTOM_PANEL_HEIGHT * (bottomFrameList.Count + 1),
-                widthDisplay - ConstantFrame.BOTTOM_PANEL_LEFT_BORDER - ConstantFrame.BOTTOM_PANEL_RIGHT_BORDER,
-                // width
+                widthDisplay - ConstantFrame.BOTTOM_PANEL_LEFT_BORDER - ConstantFrame.BOTTOM_PANEL_RIGHT_BORDER,// width
                 ConstantFrame.BOTTOM_PANEL_HEIGHT, //height
                 "",
                 ConstantFrame.COLOR_BOTTOM_FRAME,

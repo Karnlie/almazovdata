@@ -20,6 +20,10 @@ namespace GraphVis.Models.Frames
         // setting for bottom panel
         private int level = 0;
         private int position = 0;
+        private Patient patient;
+        private Action<Visit[]> actionForVisit;
+        private Action<Patient, bool> actionForPatient;
+        private List<Visit> visits;
 
         public BottomFrame(Game game) : base(game)
         {
@@ -39,11 +43,23 @@ namespace GraphVis.Models.Frames
             base.initGlobalSize();
             this.Width = widthDisplay - ConstantFrame.BOTTOM_PANEL_LEFT_BORDER - ConstantFrame.BOTTOM_PANEL_RIGHT_BORDER;
             this.Y = heightDisplay - ConstantFrame.BOTTOM_PANEL_HEIGHT * (position+1);
+
+            HelperFrame.GroupType groupType;
+            Dictionary<string, List<Visit>> visitByDate;
+            this.getFrameVisitFromLevel(visits, out groupType, out visitByDate);
+            if ((int)groupType != level)
+            {
+                this.setLevel((int)groupType);
+                this.fillVisitData(patient, visitByDate, actionForVisit, actionForPatient);
+            }
         }
 
         public void fillVisitData(Patient patient, Dictionary<string, List<Visit>> visitByDate, Action<Visit[]> actionForVisit, Action<Patient, bool> actionForPatient)
         {
             HelperFrame.deleteButton(this, listVisitButton, 0);
+            this.patient = patient;
+            this.actionForVisit = actionForVisit;
+            this.actionForPatient = actionForPatient;
             addButtonToFrame(patient, visitByDate, actionForVisit, actionForPatient);
         }
 
@@ -67,6 +83,7 @@ namespace GraphVis.Models.Frames
                 buttonImage.MouseOut += (s, e) => actionForPatient(patient, false);
                 buttonImage.Click += (s, e) =>
                 {
+                    buttonImage.BackColor = new Color(25, 71, 138, 255);
                     if (level< (int)HelperFrame.GroupType.DAY)
                     {
                         MainFrame mainFrame = (MainFrame) this.Parent;
@@ -74,10 +91,10 @@ namespace GraphVis.Models.Frames
 
                         HelperFrame.GroupType groupType;
                         Dictionary<string, List<Visit>> visitByDate = null;
-                        getFrameVisitFromLevel(dateVisits.Value, out groupType, out visitByDate);
+                        BottomFrame bottomFrame = mainFrame.createBottomFrame();
+                        bottomFrame.getFrameVisitFromLevel(dateVisits.Value, out groupType, out visitByDate);
                         if (HelperFrame.isUpdatedLevel(groupType))
                         {
-                            BottomFrame bottomFrame = mainFrame.createBottomFrame();
                             bottomFrame.setLevel((int)groupType);
                             mainFrame.AddBottomFrame(bottomFrame);
                             bottomFrame.fillVisitData(patient, visitByDate, actionForVisit, actionForPatient);
@@ -96,6 +113,7 @@ namespace GraphVis.Models.Frames
 
         public void getFrameVisitFromLevel(List<Visit> listVisit, out HelperFrame.GroupType groupType, out Dictionary<string, List<Visit>> visitByDate)
         {
+            this.visits = listVisit;
             groupType = HelperFrame.GroupType.DAY;
             visitByDate = HelperDate.getVisitsByDate(listVisit, "dd MMM");
             if (!isBlend(visitByDate.Count()))
