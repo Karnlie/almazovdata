@@ -50,6 +50,7 @@ namespace GraphVis.Models.Frames
             if ((int)groupType != level)
             {
                 this.setLevel((int)groupType);
+                HelperFrame.listLevel[position] = groupType;
                 this.fillVisitData(patient, visitByDate, actionForVisit, actionForPatient);
             }
         }
@@ -132,6 +133,12 @@ namespace GraphVis.Models.Frames
         {
             this.level = level;
         }
+
+        public int getLevel()
+        {
+            return level;
+        }
+
         public void setPosition(int position)
         {
             this.position = position;

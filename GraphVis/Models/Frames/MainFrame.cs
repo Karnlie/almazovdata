@@ -48,6 +48,21 @@ namespace GraphVis.Models.Frames
             {
                 child.resizePanel();
             }
+            int posElement = 0;
+            while(bottomFrameList.Count >= posElement+2)
+            {
+                var firstFrame = bottomFrameList.ElementAt(posElement);
+                var secondFrame = bottomFrameList.ElementAt(posElement+1);
+                if (firstFrame.getLevel() == secondFrame.getLevel())
+                {
+                    this.Remove(secondFrame);
+                    bottomFrameList.Remove(secondFrame);
+                    // TODO: change position other
+                }
+                else
+                    posElement++;
+            }
+
             base.resizePanel();
         }
 
