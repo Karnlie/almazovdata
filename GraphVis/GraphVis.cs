@@ -243,6 +243,9 @@ namespace GraphVis
 			    doctorToPatients = new Dictionary<Doctor, HashSet<Patient>>();
                 Dictionary<string, int> dict = new Dictionary<string, int>();
                 ReaderFiles.ReadFromFilePatientData("../../../../almazovdata", dict, doctorToPatients);
+                //ReaderFiles.ReadEpisodeList = ("../../../../res");
+                //ReaderFiles.ReadAndFindPatient();
+
                 stNet.BuildGraphFromDictinary(doctorToPatients);
 				graphSys.AddGraph(stNet);
 			}

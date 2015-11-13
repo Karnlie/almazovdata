@@ -10,28 +10,28 @@ using GraphVis.Models.Medicine;
 namespace GraphVis.HelperFiles
 {
     class ReaderFiles
-    {
-        public static void ReadFromFileInforNode(String filename, Dictionary<int, String> dict)
+    {   
+        public static void readEpisodeList (String filename)
+  
+{
+     var lines = File.ReadAllLines(filename); 
+     if (lines.Length > 0) 
+     { 
+         foreach (var line in lines) 
+         { 
+               string[] listAttributePatient; 
+               listAttributePatient= line.Split(new Char[] {'#'}); 
+               string episodeID= listAttributePatient[0];
+               
+          } 
+     } 
+}
+
+        public static string readAndFindPatient(string episodeID)
         {
-            // TODO: dict
-            var lines = File.ReadAllLines(filename);
-            if (lines.Length > 0)
-            {
-                // construct dictionary to convert id to number:
-                foreach (var line in lines)
-                {
-                    string[] parts;
-                    parts = line.Split(new Char[] { '\t', '^' }); //^
-                    int index1 = int.Parse(parts[0]);
-                    string index2 = parts[1];
-
-                    dict.Add(index1, index2);
-                }
-            }
-
-
+            string filename = "";
+            return filename;
         }
-
 
         public static void ReadFromFileDoctorList(String filename, Dictionary<String, int> dict)
         {
@@ -41,12 +41,10 @@ namespace GraphVis.HelperFiles
                 // construct dictionary to convert id to number:
                 foreach (var line in lines)
                 {
-                    string[] parts;
-                    parts = line.Split(new Char[] { '\t', '^' }); //^
-                    int doctorId = int.Parse(parts[0]);
-                    string fio=getNiceFIO(parts[1]);
-
-                    dict.Add(fio.Replace(" ", ""), doctorId);
+                    string parts;
+                    parts = line.Split('#')[0].Trim(); //^
+                    int doctorId = int.Parse(parts);
+           
                 }
             }
 
@@ -71,6 +69,7 @@ namespace GraphVis.HelperFiles
                 {
                     // бегаем по докторам
                     foreach (var line in lines)
+                    
                     {
                         var parts = line.Split(';');
                         DateTime datedate = getNiceDate(parts[0]);
@@ -83,8 +82,8 @@ namespace GraphVis.HelperFiles
                             category = fio.Split(':')[0].Trim(),
                             fio = fio.Split(':')[1].Trim()
                         };
-                        patient.addNewVisit(visit);
-
+                        
+                    
                         Doctor doctor = new Doctor
                         {
                             id = docId,
